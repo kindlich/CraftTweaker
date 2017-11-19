@@ -13,6 +13,7 @@ import stanhebben.zenscript.type.natives.*;
 import stanhebben.zenscript.util.ZenPosition;
 
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.util.*;
 
 import static stanhebben.zenscript.util.ZenTypeUtil.EMPTY_REGISTRY;
@@ -341,6 +342,19 @@ public abstract class ZenType {
         }
         
         return false;
+    }
+    
+    protected Field getField(Class<?> clazz, String name) {
+    	System.out.println(String.format("Searching %s for %s", clazz.getName(), name));
+    	for (Field f : clazz.getFields()) {
+    		System.out.println("\t\t Field: " + f.getName());
+    	}
+    	
+    	try {
+			return clazz.getField(name);
+		} catch (NoSuchFieldException | SecurityException e) {
+			return null;
+		}    	
     }
     
     @Override

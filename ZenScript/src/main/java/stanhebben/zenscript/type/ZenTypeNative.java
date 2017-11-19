@@ -7,6 +7,7 @@ import stanhebben.zenscript.annotations.*;
 import stanhebben.zenscript.compiler.*;
 import stanhebben.zenscript.expression.*;
 import stanhebben.zenscript.expression.partial.IPartialExpression;
+import stanhebben.zenscript.expression.partial.PartialJavaStaticField;
 import stanhebben.zenscript.type.casting.*;
 import stanhebben.zenscript.type.iterator.*;
 import stanhebben.zenscript.type.natives.*;
@@ -368,8 +369,13 @@ public class ZenTypeNative extends ZenType {
                 }
             }
             if (member2 == null) {
-                environment.error(position, "No such static member in " + getName() + ": " + name);
-                return new ExpressionInvalid(position);
+            	Field f = getField(cls, name);
+            	if (f == null) {
+            		environment.error(position, "No such static member in " + getName() + ": " + name);
+                    return new ExpressionInvalid(position);
+            	} 
+            	return new PartialJavaStaticField(cls, f, name, environment, position);
+                
             } else {
                 return member2;
             }
@@ -493,7 +499,7 @@ public class ZenTypeNative extends ZenType {
             }
         }
 
-        environment.error(position, "operator not supported");
+        environment.error(position, "binary operator not supported");
         return new ExpressionInvalid(position);
     }
 

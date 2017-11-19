@@ -31,8 +31,11 @@ public class ParsedExpressionVariable extends ParsedExpression {
             // enable usage of static members of the same type as the predicted
             // type (eg. enum values)
             IPartialExpression member = predictedType.getStaticMember(getPosition(), environment, name);
-            if(member == null || member.getType().getCastingRule(predictedType, environment) == null) {
-                environment.error(getPosition(), "could not find " + name);
+            
+            if(member == null || (member.getType().getCastingRule(predictedType, environment) == null && !member.getType().equals(predictedType))) {
+                System.out.println("predictedType: " + predictedType);
+                System.out.println("existing type: " + member.getType());
+            	environment.error(getPosition(), "could not find " + name);
                 return new ExpressionInvalid(getPosition());
             } else {
                 return member;
