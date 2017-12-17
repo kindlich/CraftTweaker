@@ -1,7 +1,5 @@
 package crafttweaker.tests.wiki;
 
-import java.util.List;
-
 import crafttweaker.annotations.BracketHandler;
 import crafttweaker.annotations.ZenRegister;
 import crafttweaker.zenscript.IBracketHandler;
@@ -12,39 +10,42 @@ import stanhebben.zenscript.parser.Token;
 import stanhebben.zenscript.symbols.IZenSymbol;
 import stanhebben.zenscript.util.ZenPosition;
 
+import java.util.List;
+
 @BracketHandler(priority = 34)
 @ZenRegister
-public class BracketWiki implements IBracketHandler<String>{
-	
-	@Override
-	public IZenSymbol resolve(IEnvironmentGlobal environment, List<Token> tokens) {
-		if ((tokens.size() < 3)) return null; 
-		if (!tokens.get(0).getValue().equalsIgnoreCase("devBracket")) return null;
-		if (!tokens.get(1).getValue().equals(":")) return null;
-		
-		return new devSymbol(tokens);
-	}
+public class BracketWiki implements IBracketHandler<String> {
 
-	@Override
-	public String get(String name) {
-		if(!name.startsWith("devBracket:")) return null;
-		return name.replaceFirst("devBracket:", "").replaceAll(":", " ");
-	}
+    @Override
+    public IZenSymbol resolve(IEnvironmentGlobal environment, List<Token> tokens) {
+        if ((tokens.size() < 3)) return null;
+        if (!tokens.get(0).getValue().equalsIgnoreCase("devBracket")) return null;
+        if (!tokens.get(1).getValue().equals(":")) return null;
 
-	private class devSymbol implements IZenSymbol {
+        return new devSymbol(tokens);
+    }
 
-		private final String value;
-		public devSymbol(List<Token> tokens) {
-			StringBuilder sB = new StringBuilder();
-			tokens.stream().map(Token::getValue).forEach(sB::append);
-			this.value = sB.toString().replaceAll(":", " ");
-		}
+    @Override
+    public String get(String name) {
+        if (!name.startsWith("devBracket:")) return null;
+        return name.replaceFirst("devBracket:", "").replaceAll(":", " ");
+    }
 
-		@Override
-		public IPartialExpression instance(ZenPosition position) {
-			return new ExpressionString(position, "DevSymbol: ".concat(value));
-		}
-		
-	}
-	
+    private class devSymbol implements IZenSymbol {
+
+        private final String value;
+
+        public devSymbol(List<Token> tokens) {
+            StringBuilder sB = new StringBuilder();
+            tokens.stream().map(Token::getValue).forEach(sB::append);
+            this.value = sB.toString().replaceAll(":", " ");
+        }
+
+        @Override
+        public IPartialExpression instance(ZenPosition position) {
+            return new ExpressionString(position, "DevSymbol: ".concat(value));
+        }
+
+    }
+
 }
