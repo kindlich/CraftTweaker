@@ -14,7 +14,7 @@ import stanhebben.zenscript.util.ZenPosition;
 
 @BracketHandler(priority = 34)
 @ZenRegister
-public class BracketWiki implements IBracketHandler{
+public class BracketWiki implements IBracketHandler<String>{
 	
 	@Override
 	public IZenSymbol resolve(IEnvironmentGlobal environment, List<Token> tokens) {
@@ -24,8 +24,13 @@ public class BracketWiki implements IBracketHandler{
 		
 		return new devSymbol(tokens);
 	}
-	
-	
+
+	@Override
+	public String get(String name) {
+		if(!name.startsWith("devBracket:")) return null;
+		return name.replaceFirst("devBracket:", "").replaceAll(":", " ");
+	}
+
 	private class devSymbol implements IZenSymbol {
 
 		private final String value;

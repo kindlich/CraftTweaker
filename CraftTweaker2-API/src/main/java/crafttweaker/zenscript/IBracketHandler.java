@@ -1,5 +1,6 @@
 package crafttweaker.zenscript;
 
+import stanhebben.zenscript.annotations.ZenMethod;
 import stanhebben.zenscript.compiler.IEnvironmentGlobal;
 import stanhebben.zenscript.parser.Token;
 import stanhebben.zenscript.symbols.IZenSymbol;
@@ -19,7 +20,7 @@ import java.util.List;
  *
  * @author Stan Hebben
  */
-public interface IBracketHandler {
+public interface IBracketHandler<T extends Object> {
     
     /**
      * Resolves a set of tokens.
@@ -32,4 +33,10 @@ public interface IBracketHandler {
      * @return the resolved symbol, or null
      */
     IZenSymbol resolve(IEnvironmentGlobal environment, List<Token> tokens);
+    
+    /**
+     * Returns the given arguments to the actual type. Only needed in language expansions
+     * @param arg The bracketed String
+     */
+     T get(String arg);
 }

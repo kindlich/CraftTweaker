@@ -4,6 +4,8 @@ import crafttweaker.CraftTweakerAPI;
 import crafttweaker.annotations.*;
 import crafttweaker.api.entity.IEntityDefinition;
 import crafttweaker.zenscript.IBracketHandler;
+import stanhebben.zenscript.annotations.ZenClass;
+import stanhebben.zenscript.annotations.ZenMethod;
 import stanhebben.zenscript.compiler.IEnvironmentGlobal;
 import stanhebben.zenscript.expression.*;
 import stanhebben.zenscript.parser.Token;
@@ -16,8 +18,9 @@ import java.util.*;
  * @author Jared
  */
 @BracketHandler(priority = 100)
+@ZenClass("crafttweaker.brackets.bracketEntity")
 @ZenRegister
-public class BracketHandlerEntity implements IBracketHandler {
+public class BracketHandlerEntity implements IBracketHandler<IEntityDefinition> {
     
     private static final Map<String, IEntityDefinition> entityNames = new HashMap<>();
     private final IJavaMethod method;
@@ -30,8 +33,8 @@ public class BracketHandlerEntity implements IBracketHandler {
         entityNames.clear();
         CraftTweakerAPI.game.getEntities().forEach(ent -> entityNames.put(ent.getId(), ent));
     }
-    
-    @SuppressWarnings("unused")
+
+    @ZenMethod
     public static IEntityDefinition getEntity(String name) {
         return entityNames.get(name);
     }
@@ -55,5 +58,11 @@ public class BracketHandlerEntity implements IBracketHandler {
         }
         return position -> new ExpressionCallStatic(position, environment, method, new ExpressionString(position, valueBuilder.toString()));
     }
+
+	@Override
+	public IEntityDefinition get(String name) {
+        if (!name.toLowerCase().startsWith("entity:")) return null;
+		return getEntity(name.replaceFirst("entity:", ""));
+	}
     
 }

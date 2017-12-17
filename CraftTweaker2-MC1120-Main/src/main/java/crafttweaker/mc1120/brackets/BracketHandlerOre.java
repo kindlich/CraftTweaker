@@ -6,6 +6,8 @@ import crafttweaker.api.oredict.IOreDictEntry;
 import crafttweaker.mc1120.oredict.MCOreDictEntry;
 import crafttweaker.zenscript.GlobalRegistry;
 import crafttweaker.zenscript.IBracketHandler;
+import stanhebben.zenscript.annotations.ZenClass;
+import stanhebben.zenscript.annotations.ZenMethod;
 import stanhebben.zenscript.compiler.IEnvironmentGlobal;
 import stanhebben.zenscript.expression.*;
 import stanhebben.zenscript.parser.Token;
@@ -19,9 +21,11 @@ import java.util.regex.Pattern;
  * @author Stan
  */
 @BracketHandler(priority = 100)
+@ZenClass("crafttweaker.brackets.bracketOre")
 @ZenRegister
-public class BracketHandlerOre implements IBracketHandler {
-    
+public class BracketHandlerOre implements IBracketHandler<IOreDictEntry> {
+
+    @ZenMethod
     public static IOreDictEntry getOre(String name) {
         return new MCOreDictEntry(name);
     }
@@ -60,5 +64,11 @@ public class BracketHandlerOre implements IBracketHandler {
         IJavaMethod method = JavaMethod.get(GlobalRegistry.getTypes(), BracketHandlerOre.class, valueBuilder.toString().contains("*") ? "getOreList" : "getOre", String.class);
         return position -> new ExpressionCallStatic(position, environment, method, new ExpressionString(position, valueBuilder.toString()));
     }
+
+	@Override
+	public IOreDictEntry get(String name) {
+		if(!name.toLowerCase().startsWith("ore:")) return null;
+		return getOre(name.replaceFirst("ore:", ""));
+	}
     
 }

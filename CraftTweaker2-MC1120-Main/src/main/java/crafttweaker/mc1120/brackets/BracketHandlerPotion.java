@@ -7,6 +7,8 @@ import crafttweaker.api.potions.IPotion;
 import crafttweaker.mc1120.potions.MCPotion;
 import crafttweaker.zenscript.*;
 import net.minecraft.potion.*;
+import stanhebben.zenscript.annotations.ZenClass;
+import stanhebben.zenscript.annotations.ZenMethod;
 import stanhebben.zenscript.compiler.IEnvironmentGlobal;
 import stanhebben.zenscript.expression.*;
 import stanhebben.zenscript.expression.partial.IPartialExpression;
@@ -18,8 +20,9 @@ import stanhebben.zenscript.util.ZenPosition;
 import java.util.*;
 
 @BracketHandler(priority = 100)
+@ZenClass("crafttweaker.brackets.bracketPotion")
 @ZenRegister
-public class BracketHandlerPotion implements IBracketHandler {
+public class BracketHandlerPotion implements IBracketHandler<IPotion> {
     
     private static final Map<String, Potion> potionNames = new HashMap<>();
     private final IJavaMethod method;
@@ -45,7 +48,7 @@ public class BracketHandlerPotion implements IBracketHandler {
 //        }
     }
     
-    @SuppressWarnings("unused")
+    @ZenMethod
     public static IPotion getPotion(String name) {
         Potion pot = potionNames.get(name);
         if(pot == null){
@@ -84,4 +87,10 @@ public class BracketHandlerPotion implements IBracketHandler {
             return new ExpressionCallStatic(position, this.environment, BracketHandlerPotion.this.method, new ExpressionString(position, this.name));
         }
     }
+
+	@Override
+	public IPotion get(String name) {
+		if(!name.toLowerCase().startsWith("potion:")) return null;
+		return getPotion(name.replaceFirst("potion:",""));
+	}
 }

@@ -10,6 +10,8 @@ import net.minecraft.item.*;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.oredict.OreDictionary;
 import stanhebben.zenscript.ZenTokener;
+import stanhebben.zenscript.annotations.ZenClass;
+import stanhebben.zenscript.annotations.ZenMethod;
 import stanhebben.zenscript.compiler.IEnvironmentGlobal;
 import stanhebben.zenscript.expression.*;
 import stanhebben.zenscript.parser.Token;
@@ -25,8 +27,9 @@ import static crafttweaker.api.minecraft.CraftTweakerMC.getIItemStackWildcardSiz
  * @author Stan
  */
 @BracketHandler(priority = 100)
+@ZenClass("crafttweaker.brackets.bracketItem")
 @ZenRegister
-public class BracketHandlerItem implements IBracketHandler {
+public class BracketHandlerItem implements IBracketHandler<IItemStack> {
     
     private static final Map<String, Item> itemNames = new HashMap<>();
     private static final Map<String, Block> blockNames = new HashMap<>();
@@ -63,6 +66,7 @@ public class BracketHandlerItem implements IBracketHandler {
         MCItemUtils.createItemList();
     }
     
+    @ZenMethod
     public static IItemStack getItem(String name, int meta) {
         // Item item = (Item) Item.itemRegistry.getObject(name);
         Item item = itemNames.get(name);
@@ -120,5 +124,18 @@ public class BracketHandlerItem implements IBracketHandler {
         
         return null;
     }
+
+	@Override
+	public IItemStack get(String name) {
+        if(name.startsWith("item:")) name = name.replaceFirst("item:", "");
+
+        String[] split = name.split(":");
+        if(split.length == 2) return getItem(name, 0);
+        else {
+            int meta = split[split.length -1].equals("*") ? OreDictionary.WILDCARD_VALUE : Integer.parseInt(split[split.length-1]);
+            split = Arrays.copyOfRange(split, 0, split.length-2);
+            return getItem(String.join(":", split), meta);
+        }
+	}
     
 }

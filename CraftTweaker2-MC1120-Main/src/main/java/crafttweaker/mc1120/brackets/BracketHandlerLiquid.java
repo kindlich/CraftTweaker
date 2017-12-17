@@ -6,6 +6,8 @@ import crafttweaker.api.liquid.ILiquidStack;
 import crafttweaker.mc1120.liquid.MCLiquidStack;
 import crafttweaker.zenscript.GlobalRegistry;
 import net.minecraftforge.fluids.*;
+import stanhebben.zenscript.annotations.ZenClass;
+import stanhebben.zenscript.annotations.ZenMethod;
 import stanhebben.zenscript.compiler.IEnvironmentGlobal;
 import stanhebben.zenscript.expression.*;
 import stanhebben.zenscript.parser.Token;
@@ -18,8 +20,9 @@ import java.util.*;
  * @author Stan
  */
 @BracketHandler(priority = 100)
+@ZenClass("crafttweaker.brackets.bracketLiquid")
 @ZenRegister
-public class BracketHandlerLiquid implements IBracketHandler {
+public class BracketHandlerLiquid implements IBracketHandler<ILiquidStack> {
     
     private static final Map<String, Fluid> fluidNames = new HashMap<>();
     private final IJavaMethod method;
@@ -35,7 +38,8 @@ public class BracketHandlerLiquid implements IBracketHandler {
             fluidNames.put(fluidName.replace(" ", ""), FluidRegistry.getFluid(fluidName));
         }
     }
-    
+
+    @ZenMethod
     public static ILiquidStack getLiquid(String name) {
         Fluid fluid = fluidNames.get(name);
         if(fluid != null) {
@@ -70,5 +74,14 @@ public class BracketHandlerLiquid implements IBracketHandler {
         
         return null;
     }
+
+	@Override
+	public ILiquidStack get(String name) {
+        if(!(name.toLowerCase().startsWith("liquid:") || name.toLowerCase().startsWith("fluid:"))) return null;
+
+		if (name.toLowerCase().startsWith("liquid:")) name = name.replaceFirst("liquid:", "");
+        if (name.toLowerCase().startsWith("fluid:")) name = name.replaceFirst("fluid:", "");
+		return getLiquid(name);
+	}
     
 }
