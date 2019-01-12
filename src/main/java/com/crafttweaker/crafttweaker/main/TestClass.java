@@ -16,4 +16,9 @@ public class TestClass {
         System.out.println("Hello");
     }
     
+    @ZenCodeGlobals.Global
+    public static void println(String toPrint) {
+        System.out.println(toPrint);
+    }
+    
 }

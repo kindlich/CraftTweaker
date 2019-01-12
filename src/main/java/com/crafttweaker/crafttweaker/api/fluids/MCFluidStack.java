@@ -1,9 +1,13 @@
-package com.crafttweaker.crafttweaker.api.liquids;
+package com.crafttweaker.crafttweaker.api.fluids;
 
 import com.crafttweaker.crafttweaker.main.ingredients.IIngredient;
+import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraftforge.fluids.FluidStack;
 
+import javax.annotation.Nonnull;
+
+@MethodsReturnNonnullByDefault
 public class MCFluidStack implements IIngredient<FluidStack> {
     
     private final FluidStack stack;
@@ -13,6 +17,7 @@ public class MCFluidStack implements IIngredient<FluidStack> {
     }
     
     @Override
+    @Nonnull
     public FluidStack getInternal() {
         return stack;
     }
@@ -24,6 +29,6 @@ public class MCFluidStack implements IIngredient<FluidStack> {
     
     @Override
     public String toBracketString() {
-        return String.format("<liquid:%s>%s", this.stack.getFluid().getName(), this.stack.amount == 1 ? "" : " * " + this.stack.amount);
+        return String.format("<fluid:%s>%s", this.stack.getFluid().getName(), this.stack.amount == 1 ? "" : " * " + this.stack.amount);
     }
 }

@@ -1,9 +1,14 @@
 package com.crafttweaker.crafttweaker.main.items;
 
 import com.crafttweaker.crafttweaker.api.items.IItemStack;
+import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
+import org.openzen.zencode.java.ZenCodeType;
 
+import javax.annotation.Nonnull;
+
+@MethodsReturnNonnullByDefault
 public class MCItemStack implements IItemStack {
     
     private final ItemStack stack;
@@ -19,7 +24,7 @@ public class MCItemStack implements IItemStack {
     
     @Override
     public IItemStack updateTag() {
-        final ItemStack stack = this.stack.copy();
+        final ItemStack stack = getInternal().copy();
         return new MCItemStack(stack);
     }
     
@@ -32,14 +37,14 @@ public class MCItemStack implements IItemStack {
     
     @Override
     public IItemStack grow(int amount) {
-        final ItemStack copy = this.stack.copy();
+        final ItemStack copy = getInternal().copy();
         copy.grow(amount);
         return new MCItemStack(copy);
     }
     
     @Override
     public IItemStack shrink(int amount) {
-        final ItemStack copy = this.stack.copy();
+        final ItemStack copy = getInternal().copy();
         copy.shrink(amount);
         return new MCItemStack(copy);
     }
@@ -58,6 +63,7 @@ public class MCItemStack implements IItemStack {
     //    }
     
     @Override
+    @Nonnull
     public ItemStack getInternal() {
         return stack.copy();
     }
@@ -70,5 +76,10 @@ public class MCItemStack implements IItemStack {
     @Override
     public String toBracketString() {
         return String.format("<%s:%d>", this.stack.getItem().delegate.name(), this.stack.getDamage());
+    }
+    
+    @Override
+    public String toString() {
+        return "(MCItemStack) " + toBracketString();
     }
 }

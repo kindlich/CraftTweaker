@@ -1,5 +1,6 @@
 package com.crafttweaker.crafttweaker.main;
 
+import com.crafttweaker.crafttweaker.api.recipes.crafting.MCRecipeManager;
 import com.crafttweaker.crafttweaker.main.brackets.BracketExpressionParsers;
 import com.crafttweaker.crafttweaker.main.zencode.ZenCodeInterface;
 import com.crafttweaker.crafttweaker.main.zencode.loader.Loader;
@@ -28,13 +29,15 @@ public class CraftTweaker {
     
     // Directly reference a log4j logger.
     private static final Logger LOGGER = LogManager.getLogger();
-    public static List<IRecipe> recipeList = new ArrayList<>();
+    //public static List<IRecipe> recipeList = new ArrayList<>();
     
     public CraftTweaker() {
         // Register the preInit method for modloading
         FMLModLoadingContext.get().getModEventBus().addListener(this::preInit);
         // Register the init method for modloading
         FMLModLoadingContext.get().getModEventBus().addListener(this::init);
+        // Register the onServerStarting method for modloading
+        FMLModLoadingContext.get().getModEventBus().addListener(this::onServerStarting);
         System.out.println(">>>");
         // Register ourselves for server, registry and other game events we are interested in
         
@@ -89,7 +92,7 @@ public class CraftTweaker {
         }
         
         System.out.println(">>>");
-        System.out.println(recipeList);
+        System.out.println(MCRecipeManager.INSTANCE.addedRecipes);
     }
     
     
@@ -107,7 +110,7 @@ public class CraftTweaker {
         list.add(Ingredient.fromStacks(new ItemStack(Blocks.DIRT)));
         final RecipeManager recipeManager = event.getServer().getRecipeManager();
         recipeManager.addRecipe(new ShapelessRecipe(new ResourceLocation("crafttweaker", "test"), "", new ItemStack(Items.DIAMOND), list));
-        for(IRecipe iRecipe : recipeList) {
+        for(IRecipe iRecipe : MCRecipeManager.INSTANCE.addedRecipes) {
             recipeManager.addRecipe(iRecipe);
         }
     }

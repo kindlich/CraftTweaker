@@ -8,12 +8,12 @@ buildscript {
         mavenCentral()
     }
     // This is only here while i'm activly developing FG, Remind me to remove when we publically release
-    configurations {
-        classpath.resolutionStrategy {
-            cacheDynamicVersionsFor 10, 'seconds'
-            cacheChangingModulesFor 0, 'seconds'
-        }
-    }
+    //configurations {
+    //    classpath.resolutionStrategy {
+    //        cacheDynamicVersionsFor 10, 'seconds'
+    //        cacheChangingModulesFor 0, 'seconds'
+    //    }
+    //}
     dependencies {
         classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '3.+', changing: true
     }
@@ -23,8 +23,8 @@ apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'eclipse'
 
 version = '1.0'
-group = 'com.yourname.modid' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
-archivesBaseName = 'modid'
+group = 'com.crafttweaker.crafttweaker' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
+archivesBaseName = 'crafttweaker'
 
 sourceCompatibility = targetCompatibility = '1.8' // Need this here so eclipse task generates correctly.
 compileJava {
@@ -40,27 +40,27 @@ minecraft {
     mappings channel: 'snapshot', version: '20180921-1.13'
     // makeObfSourceJar = false // an Srg named sources jar is made by default. uncomment this to disable.
 
-    //accessTransformer = file('my_at.cfg')
+    //accessTransformer = file('crafttweaker_at.cfg')
 
-    // default run configurations.
-    // these can be tweaked, removed, or duplicated as needed.
-    runConfig {
-        name = "MinecraftClient"
-        main = "net.minecraftforge.userdev.UserdevLauncher"
-        ideaModuleName = "${project.name}_main"
-        workingDirectory = project.file("run").canonicalPath
-        environment "target", "fmldevclient"
-        environment "assetDirectory", downloadAssets.output.absolutePath
-    }
-
-    runConfig {
-        name = "MinecraftServer"
-        main = "net.minecraftforge.userdev.UserdevLauncher"
-        ideaModuleName = "${project.name}_main"
-        workingDirectory = project.file("run").canonicalPath
-        environment "target", "fmldevserver"
-        environment "assetDirectory", downloadAssets.output.absolutePath
-    }
+   // // default run configurations.
+   // // these can be tweaked, removed, or duplicated as needed.
+   // runConfig {
+   //     name = "MinecraftClient"
+   //     main = "net.minecraftforge.userdev.UserdevLauncher"
+   //     ideaModuleName = "${project.name}_main"
+   //     workingDirectory = project.file("run").canonicalPath
+   //     environment "target", "fmldevclient"
+   //     environment "assetDirectory", downloadAssets.output.absolutePath
+   // }
+//
+   // runConfig {
+   //     name = "MinecraftServer"
+   //     main = "net.minecraftforge.userdev.UserdevLauncher"
+   //     ideaModuleName = "${project.name}_main"
+   //     workingDirectory = project.file("run").canonicalPath
+   //     environment "target", "fmldevserver"
+   //     environment "assetDirectory", downloadAssets.output.absolutePath
+   // }
 }
 
 repositories {
@@ -75,10 +75,12 @@ repositories {
 dependencies {
     // Specify the version of Minecraft to use, If this is any group other then 'net.minecraft' it is assumed
     // that the dep is a ForgeGradle 'patcher' dependency. And it's patches will be applied. 
-    minecraft 'net.minecraftforge.test:forge:1.13-24.0.35-1.13-pre'
+    minecraft 'net.minecraftforge.test:forge:1.13-24.0.76-1.13-pre'
     //compile 'org.openzen.zencode:zencode-javascripting:0.3.0'
     compile name: 'JavaScripting-0.3.5'
     compile group: 'net.sf.trove4j', name: 'trove4j', version: '3.0.3'
+    // https://mvnrepository.com/artifact/org.jetbrains/annotations
+    compile group: 'org.jetbrains', name: 'annotations', version: '15.0'
     // you may put jars on which you depend on in ./libs
     // or you may define them like so..
     //compile "some.group:artifact:version:classifier"

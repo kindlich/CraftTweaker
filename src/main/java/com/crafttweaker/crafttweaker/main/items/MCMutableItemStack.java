@@ -1,9 +1,12 @@
 package com.crafttweaker.crafttweaker.main.items;
 
 import com.crafttweaker.crafttweaker.api.items.IItemStack;
+import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
+import org.jetbrains.annotations.Contract;
 
+@MethodsReturnNonnullByDefault
 public class MCMutableItemStack implements IItemStack {
     
     private final ItemStack stack;

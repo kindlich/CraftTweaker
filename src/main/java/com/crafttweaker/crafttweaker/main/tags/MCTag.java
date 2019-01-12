@@ -2,9 +2,13 @@ package com.crafttweaker.crafttweaker.main.tags;
 
 
 import com.crafttweaker.crafttweaker.api.tags.ITag;
+import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.tags.Tag;
 
+import javax.annotation.Nonnull;
+
+@MethodsReturnNonnullByDefault
 public class MCTag implements ITag {
     
     
@@ -15,6 +19,7 @@ public class MCTag implements ITag {
     }
     
     @Override
+    @Nonnull
     public Tag getInternal() {
         return tag;
     }
