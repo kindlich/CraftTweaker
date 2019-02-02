@@ -50,7 +50,8 @@ public class BracketExpressionParsers {
             return null;
         }
         final ItemStack stack = new ItemStack(item, 1);
-        stack.setDamage(meta);
+        if(meta != 0)
+            stack.setDamage(meta);
         return new MCItemStack(stack);
     }
     

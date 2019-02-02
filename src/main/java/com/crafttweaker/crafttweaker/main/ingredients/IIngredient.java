@@ -6,10 +6,10 @@ import org.jetbrains.annotations.Contract;
 import org.openzen.zencode.java.ZenCodeType;
 
 @MethodsReturnNonnullByDefault
-public interface IIngredient<T> {
+public interface IIngredient {
     
     @Contract(pure = true)
-    T getInternal();
+    Object getInternal();
     
     @Contract(pure = true)
     Ingredient asVanillaIngredient();

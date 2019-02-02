@@ -7,7 +7,7 @@ import org.openzen.zencode.java.ZenCodeType;
 
 
 @MethodsReturnNonnullByDefault
-public interface IItemStack extends IIngredient<ItemStack> {
+public interface IItemStack extends IIngredient {
     
     @ZenCodeType.Method
     IItemStack mutable();
@@ -24,4 +24,7 @@ public interface IItemStack extends IIngredient<ItemStack> {
     
     @ZenCodeType.Method
     IItemStack shrink(int size);
+    
+    @Override
+    ItemStack getInternal();
 }

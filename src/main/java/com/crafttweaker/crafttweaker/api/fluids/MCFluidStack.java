@@ -8,7 +8,7 @@ import net.minecraftforge.fluids.FluidStack;
 import javax.annotation.Nonnull;
 
 @MethodsReturnNonnullByDefault
-public class MCFluidStack implements IIngredient<FluidStack> {
+public class MCFluidStack implements IIngredient {
     
     private final FluidStack stack;
     

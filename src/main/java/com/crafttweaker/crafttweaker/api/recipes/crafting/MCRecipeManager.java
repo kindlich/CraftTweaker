@@ -1,6 +1,7 @@
 package com.crafttweaker.crafttweaker.api.recipes.crafting;
 
 import com.crafttweaker.crafttweaker.api.items.IItemStack;
+import com.crafttweaker.crafttweaker.main.ingredients.IIngredient;
 import net.minecraft.item.crafting.*;
 import net.minecraft.util.*;
 import org.openzen.zencode.java.*;
@@ -20,9 +21,9 @@ public class MCRecipeManager {
     }
     
     @ZenCodeType.Method
-    public void addShapeless(String name, IItemStack out, IItemStack[] ins) {
+    public void addShapeless(String name, IItemStack out, IIngredient[] ins) {
         NonNullList<Ingredient> list = NonNullList.create();
-        for(IItemStack in : ins) {
+        for(IIngredient in : ins) {
             if(in != null)
                 list.add(in.asVanillaIngredient());
         }
@@ -31,16 +32,16 @@ public class MCRecipeManager {
     
     
     @ZenCodeType.Method
-    public void addShaped(String name, IItemStack out, IItemStack[][] ins) {
+    public void addShaped(String name, IItemStack out, IIngredient[][] ins) {
         NonNullList<Ingredient> list = NonNullList.create();
         
         final int height = ins.length;
         int width = 0;
-        for(IItemStack[] in : ins)
+        for(IIngredient[] in : ins)
             width = Math.max(width, in.length);
         
-        for(IItemStack[] row : ins) {
-            for(IItemStack mcItemStack : row)
+        for(IIngredient[] row : ins) {
+            for(IIngredient mcItemStack : row)
                 list.add(mcItemStack == null ? Ingredient.EMPTY : mcItemStack.asVanillaIngredient());
             for(int i = 0; i < width - row.length; i++)
                 list.add(Ingredient.EMPTY);
