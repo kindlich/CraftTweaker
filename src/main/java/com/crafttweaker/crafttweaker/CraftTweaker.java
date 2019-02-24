@@ -1,10 +1,13 @@
 package com.crafttweaker.crafttweaker;
 
+import com.crafttweaker.crafttweaker.vanilla.crafting.CrTRecipeManager;
 import com.crafttweaker.crafttweaker.zencode.ASMMagic;
 import com.crafttweaker.crafttweaker.zencode.CrTNativeModules;
 import com.crafttweaker.crafttweaker.zencode.preprocessors.ModLoadedPreprocessor;
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
+import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.item.crafting.RecipeManager;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -80,6 +83,10 @@ public class CraftTweaker {
     public void onServerStarting(FMLServerStartingEvent event) {
         // do something when the server starts
         LOGGER.info("HELLO from server starting");
+        final RecipeManager vanillaRecipeManager = event.getServer().getRecipeManager();
+        for(IRecipe addedRecipe : CrTRecipeManager.INSTANCE.getAddedRecipes()) {
+            vanillaRecipeManager.addRecipe(addedRecipe);
+        }
     }
     
     // You can use EventBusSubscriber to automatically subscribe events on the contained class (this is subscribing to the MOD
