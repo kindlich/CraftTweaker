@@ -31,6 +31,17 @@ authors="Team CraftTweaker and Contributers" #optional
 description='''
 Do Stuff!
 '''
+[[mods]] #mandatory
+# The modid of the mod
+modId="modtweaker" #mandatory
+# The version number of the mod - there's a few well known ${} variables useable here or just hardcode it
+version="${file.jarVersion}" #mandatory
+ # A display name for the mod
+displayName="ModTweaker" #mandatory
+description='''
+MOT Baby
+'''
+
 # A dependency - use the . to indicate dependency for a specific modid. Dependencies are optional.
 [[dependencies.crafttweaker]] #optional
     # the modid of the dependency

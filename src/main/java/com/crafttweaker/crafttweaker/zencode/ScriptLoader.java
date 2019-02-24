@@ -54,11 +54,19 @@ public class ScriptLoader {
         module.addClass(clazz);
     }
     
-    void registerModule(String moduleName, String basePackageName) {
+    void registerModule(String moduleName, String basePackageName, String... dependentModules) {
         if(modulesInitialized)
             throw new IllegalStateException("Modules already initialized, cannot add module " + moduleName);
         
-        final JavaNativeModule nativeModule = scriptingEngine.createNativeModule(moduleName, basePackageName);
+        JavaNativeModule[] dependencies = new JavaNativeModule[dependentModules.length];
+        for(int i = 0; i < dependentModules.length; i++) {
+            final JavaNativeModule module = this.modules.get(dependentModules[i]);
+            if(module == null)
+                throw new IllegalArgumentException("Dependent module not present: " + dependentModules[i]);
+            dependencies[i] = module;
+        }
+        
+        final JavaNativeModule nativeModule = scriptingEngine.createNativeModule(moduleName, basePackageName, dependencies);
         modules.put(basePackageName, nativeModule);
     }
     

@@ -17,8 +17,8 @@ public class CrTNativeModules {
     public static final String DEFAULT_MODULE_NAME = "example";
     public static final String DEFAULT_LOADER = "crafttweaker";
     public static final String DEFAULT_MODULE_BASE = "com.crafttweaker.crafttweaker";
-    public static final FileAccess DEFAULT_FILE_ACCESS = new FileAccess(new File("scripts"), pathname -> pathname.getName()
-            .endsWith(".zs"));
+    public static final FileAccess DEFAULT_FILE_ACCESS = new FileAccess(new File("scripts"), p -> p.getName().endsWith(".zs"));
+    
     public static final PrefixedBracketParser SHARED_BEP = new PrefixedBracketParser(null);
     
     
@@ -33,16 +33,18 @@ public class CrTNativeModules {
         loaders.put(DEFAULT_LOADER, scriptLoader);
     }
     
-    public static void registerModule(@NotNull String modid, @NotNull String basePackageName) {
-        registerModule(modid, basePackageName, DEFAULT_LOADER);
-    }
     
-    public static void registerModule(@NotNull String modid, @NotNull String basePackageName, @NotNull String loaderName) {
+    public static void registerModule(@NotNull String modid, @NotNull String basePackageName) {
+        registerModule(modid, basePackageName, DEFAULT_LOADER, DEFAULT_MODULE_BASE);
+    }
+
+    
+    public static void registerModule(@NotNull String modid, @NotNull String basePackageName, @NotNull String loaderName, String... dependentModules) {
         if(!loaders.containsKey(loaderName))
             throw new IllegalArgumentException(String.format("Loader %s does not exist", loaderName));
         
         final ScriptLoader scriptingEngine = loaders.get(loaderName);
-        scriptingEngine.registerModule("mods." + modid, basePackageName);
+        scriptingEngine.registerModule("mods_" + modid, basePackageName, dependentModules);
     }
     
     
