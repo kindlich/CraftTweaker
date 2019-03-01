@@ -38,7 +38,7 @@ public class CrTRecipeShapeless implements IRecipe {
     @Override
     public boolean matches(IInventory inv, World worldIn) {
         //Don't do anything here, just make sure all slots have been visited
-        final boolean[] visited = forAllUniqueMatches(inv, (ingredientIndex, stack) -> { });
+        final boolean[] visited = forAllUniqueMatches(inv, (ingredientIndex, matchingSlot, stack) -> { });
         
         int visitedCount = 0;
         for(int slot = 0; slot < visited.length; slot++) {
@@ -57,7 +57,7 @@ public class CrTRecipeShapeless implements IRecipe {
         
         final IItemStack[] stacks = new IItemStack[this.ingredients.length];
         
-        forAllUniqueMatches(inv, (ingredientIndex, stack) -> stacks[ingredientIndex] = stack);
+        forAllUniqueMatches(inv, (ingredientIndex, matchingSlot, stack) -> stacks[ingredientIndex] = stack);
         
         return this.function.process(this.output, stacks).getInternal();
     }
@@ -75,7 +75,7 @@ public class CrTRecipeShapeless implements IRecipe {
     @Override
     public NonNullList<ItemStack> getRemainingItems(IInventory inv) {
         final NonNullList<ItemStack> remainingItems = NonNullList.withSize(inv.getSizeInventory(), ItemStack.EMPTY);
-        forAllUniqueMatches(inv, (ingredientIndex, stack) -> remainingItems.set(ingredientIndex, this.ingredients[ingredientIndex]
+        forAllUniqueMatches(inv, (ingredientIndex, matchingSlot, stack) -> remainingItems.set(matchingSlot, this.ingredients[ingredientIndex]
                 .getRemainingItem(stack)
                 .getInternal()));
         return remainingItems;
@@ -107,7 +107,7 @@ public class CrTRecipeShapeless implements IRecipe {
                 final MCItemStack stack = new MCItemStack(stackInSlot);
                 if(ingredient.matches(stack)) {
                     visited[i] = true;
-                    action.accept(ingredientIndex, stack);
+                    action.accept(ingredientIndex, i, stack);
                     continue outer;
                 }
             }
@@ -147,7 +147,7 @@ public class CrTRecipeShapeless implements IRecipe {
     
     private interface ForAllUniqueAction {
         
-        void accept(int ingredientIndex, IItemStack stack);
+        void accept(int ingredientIndex, int matchingSlot, IItemStack stack);
         
     }
 }

@@ -16,7 +16,7 @@ import org.junit.runner.RunWith;
 
 
 @RunWith(CrTTestRunner.class)
-public class CrTRecipeShapedTest {
+public class CrTRecipeShapelessTest {
     
     private static MockInventory invA = null;
     private static MockInventory invB = null;
@@ -34,7 +34,7 @@ public class CrTRecipeShapedTest {
     private static IItemStack I_STACK_D = null;
     
     
-    public CrTRecipeShapedTest() {
+    public CrTRecipeShapelessTest() {
     }
     
     @BeforeClass
@@ -58,32 +58,24 @@ public class CrTRecipeShapedTest {
     
     @Test
     public void matchesNoMirror() {
-        final CrTRecipeShaped recipe = new CrTRecipeShaped("name_a", I_STACK_A, new IIngredient[][]{{I_STACK_A, I_STACK_B}, {I_STACK_C, I_STACK_D}}, false, null);
+        final CrTRecipeShapeless recipe = new CrTRecipeShapeless("name_a", I_STACK_A, new IIngredient[]{I_STACK_A, I_STACK_B, I_STACK_C, I_STACK_D}, null);
         Assert.assertTrue("Recipe does not match", recipe.matches(invA, null));
         Assert.assertFalse("Recipe does unexpectedly match", recipe.matches(invB, null));
-        Assert.assertFalse("Mirrored setup matches even though mirrored == false", recipe.matches(invC, null));
+        Assert.assertTrue("Recipe in different order does not match", recipe.matches(invC, null));
     }
     
-    @Test
-    public void matchesMirror() {
-        final CrTRecipeShaped recipe = new CrTRecipeShaped("name_a", I_STACK_A, new IIngredient[][]{{I_STACK_A, I_STACK_B}, {I_STACK_C, I_STACK_D}}, true, null);
-        Assert.assertTrue("Recipe does not match", recipe.matches(invA, null));
-        Assert.assertFalse("Recipe does unexpectedly match", recipe.matches(invB, null));
-        Assert.assertTrue("Mirrored setup does not match even though mirrored == true", recipe.matches(invC, null));
-    }
+    
     
     public void matchesAdditionalItems() {
-        final CrTRecipeShaped recipe = new CrTRecipeShaped("name_a", I_STACK_A, new IIngredient[][]{{I_STACK_A, I_STACK_B}, {I_STACK_C, I_STACK_D}}, true, null);
+        final CrTRecipeShapeless recipe = new CrTRecipeShapeless("name_a", I_STACK_A, new IIngredient[]{I_STACK_A, I_STACK_B, I_STACK_C, I_STACK_D}, null);
         Assert.assertFalse("Recipe matching with additional items present", recipe.matches(invD, null));
     }
     
     @Test
     public void matchesOutput_NoFunction() {
-        final CrTRecipeShaped recipe = new CrTRecipeShaped("name_a", I_STACK_A, new IIngredient[][]{{I_STACK_A, I_STACK_B}, {I_STACK_C, I_STACK_D}}, true, null);
+        final CrTRecipeShapeless recipe = new CrTRecipeShapeless("name_a", I_STACK_A, new IIngredient[]{I_STACK_A, I_STACK_B, I_STACK_C, I_STACK_D}, null);
         Assert.assertTrue("Recipe returns incorrect output", ItemStack.areItemsEqual(STACK_A, recipe.getCraftingResult(invA)));
         Assert.assertFalse("Recipe output is empty", recipe.getCraftingResult(invA).isEmpty());
-        
-        Assert.assertTrue("Invalid inventory returns nonempty stack", recipe.getCraftingResult(invB).isEmpty());
         
         Assert.assertTrue("Recipe returns incorrect output", ItemStack.areItemsEqual(STACK_A, recipe.getCraftingResult(invC)));
         Assert.assertFalse("Recipe output is empty", recipe.getCraftingResult(invC).isEmpty());
@@ -91,20 +83,20 @@ public class CrTRecipeShapedTest {
     
     @Test
     public void matchesOutput_Function() {
-        final CrTRecipeShaped recipe = new CrTRecipeShaped("name_a", I_STACK_A, new IIngredient[][]{{I_STACK_A, I_STACK_B}, {I_STACK_C, I_STACK_D}}, true, (usualOut, inputs) -> usualOut);
+        final CrTRecipeShapeless recipe = new CrTRecipeShapeless("name_a", I_STACK_A, new IIngredient[]{I_STACK_A, I_STACK_B, I_STACK_C, I_STACK_D}, (usualOut, inputs) -> usualOut);
         Assert.assertTrue("Recipe returns invalid output", ItemStack.areItemStacksEqual(recipe.getCraftingResult(invA), STACK_A));
     }
     
     @Test
     public void matchesOutput_Function2() {
-        final CrTRecipeShaped recipe = new CrTRecipeShaped("name_a", I_STACK_A, new IIngredient[][]{{I_STACK_A, I_STACK_B}, {I_STACK_C, I_STACK_D}}, true, (usualOut, inputs) -> I_STACK_D);
+        final CrTRecipeShapeless recipe = new CrTRecipeShapeless("name_a", I_STACK_A, new IIngredient[]{I_STACK_A, I_STACK_B, I_STACK_C, I_STACK_D}, (usualOut, inputs) -> I_STACK_D);
         Assert.assertTrue("Recipe returns invalid output", ItemStack.areItemStacksEqual(recipe.getCraftingResult(invA), STACK_D));
     }
     
     
     @Test
     public void getRemainingItems() {
-        final CrTRecipeShaped recipe = new CrTRecipeShaped("name_a", I_STACK_A, new IIngredient[][]{{I_STACK_A, I_STACK_B}, {I_STACK_C, I_STACK_D}}, true, null);
+        final CrTRecipeShapeless recipe = new CrTRecipeShapeless("name_a", I_STACK_A, new IIngredient[]{I_STACK_A, I_STACK_B, I_STACK_C, I_STACK_D}, null);
         for(ItemStack remainingItem : recipe.getRemainingItems(invA)) {
             Assert.assertTrue("Default remaining item is not empty", remainingItem.isEmpty());
         }
@@ -118,32 +110,27 @@ public class CrTRecipeShapedTest {
                 return I_STACK_D;
             }
         };
-        final CrTRecipeShaped recipe = new CrTRecipeShaped("name_a", I_STACK_A, new IIngredient[][]{{A_Transformed, I_STACK_A}, {I_STACK_C, A_Transformed}}, true, null);
-        final NonNullList<ItemStack> remainingItems = recipe.getRemainingItems(new MockInventory(new ItemStack[][]{{STACK_A, STACK_A}, {STACK_C, STACK_A}}));
+        final MockInventory inv = new MockInventory(new ItemStack[][]{{STACK_A, STACK_A, STACK_B}, {STACK_C}, {}});
         
-        Assert.assertTrue("Transformed item not returing its promised output", ItemStack.areItemStacksEqual(STACK_D, remainingItems
-                .get(0)));
-        Assert.assertTrue("Untransformed item not being empty", remainingItems.get(1).isEmpty());
-        Assert.assertTrue("Untransformed item not being empty", remainingItems.get(2).isEmpty());
-        Assert.assertTrue("Untransformed item not being empty", remainingItems.get(3).isEmpty());
-        Assert.assertTrue("Transformed item not returing its promised output", ItemStack.areItemStacksEqual(STACK_D, remainingItems
-                .get(4)));
-        Assert.assertTrue("Untransformed item not being empty", remainingItems.get(5).isEmpty());
-        Assert.assertTrue("Untransformed item not being empty", remainingItems.get(6).isEmpty());
-        Assert.assertTrue("Untransformed item not being empty", remainingItems.get(7).isEmpty());
-        Assert.assertTrue("Untransformed item not being empty", remainingItems.get(8).isEmpty());
+        final CrTRecipeShapeless recipe = new CrTRecipeShapeless("name_a", I_STACK_A, new IIngredient[]{A_Transformed, I_STACK_B, I_STACK_C, A_Transformed}, null);
+    
+        final NonNullList<ItemStack> remainingItems = recipe.getRemainingItems(inv);
+        Assert.assertTrue("Transformed Item not returned", ItemStack.areItemStacksEqual(STACK_D, remainingItems.get(0)));
+        Assert.assertTrue("Transformed Item not returned", ItemStack.areItemStacksEqual(STACK_D, remainingItems.get(1)));
+        
+    
     }
     
     @Test
     public void getRecipeId() {
-        final IIngredient[][] ingredients = new IIngredient[][]{{I_STACK_A, I_STACK_B}, {I_STACK_C, I_STACK_D}};
-        CrTRecipeShaped recipe = new CrTRecipeShaped("name_a", I_STACK_A, ingredients, true, null);
+        final IIngredient[] ingredients = new IIngredient[]{I_STACK_A, I_STACK_B, I_STACK_C, I_STACK_D};
+        CrTRecipeShapeless recipe = new CrTRecipeShapeless("name_a", I_STACK_A, ingredients, null);
         Assert.assertEquals("Invalid generated recipeID", new ResourceLocation("crafttweaker", "name_a"), recipe.getId());
         
-        recipe = new CrTRecipeShaped("name", I_STACK_A, ingredients, true, null);
+        recipe = new CrTRecipeShapeless("name", I_STACK_A, ingredients, null);
         Assert.assertEquals("Invalid generated recipeID", new ResourceLocation("crafttweaker", "name"), recipe.getId());
     
-        recipe = new CrTRecipeShaped("some_other_name", I_STACK_A, ingredients, true, null);
+        recipe = new CrTRecipeShapeless("some_other_name", I_STACK_A, ingredients, null);
         Assert.assertEquals("Invalid generated recipeID", new ResourceLocation("crafttweaker", "some_other_name"), recipe.getId());
     }
     

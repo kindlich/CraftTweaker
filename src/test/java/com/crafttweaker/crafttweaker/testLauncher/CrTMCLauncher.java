@@ -21,7 +21,7 @@ public class CrTMCLauncher {
         
         //@formatter:off
         final String[] args = new String[] {
-                "--gameDir", ".",
+                "--gameDir", "./runTest",
                 "--launchTarget", "fmluserdevserver",
                 "--fml.forgeVersion", env.getOrDefault("FORGE_VERSION", forgeVersion),
                 "--fml.mcpVersion", env.getOrDefault("MCP_VERSION", mcpVersion),

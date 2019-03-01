@@ -100,12 +100,12 @@ public class CrTRecipeShaped implements IRecipe {
     
     @Override
     public ItemStack getCraftingResult(IInventory inv) {
-        if(function == null)
-            return ItemStack.EMPTY;
-        
         final IntPair offset = calculateOffset(inv);
         if(offset == INVALID)
-            return this.output.getInternal();
+            return ItemStack.EMPTY;
+        
+        if(function == null)
+            return getRecipeOutput();
         
         final int rowOffset;
         final int columnOffset;
@@ -148,6 +148,9 @@ public class CrTRecipeShaped implements IRecipe {
             final IntPair offset = calculateOffset(inv);
             rowOffset = offset.getX();
             columnOffset = offset.getY();
+            
+            if(offset == INVALID)
+                return result;
         }
         
         for(int rowIndex = 0; rowIndex < this.ingredients.length; rowIndex++) {
