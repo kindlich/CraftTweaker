@@ -5,6 +5,9 @@ import crafttweaker.runtime.ILogger;
 import net.minecraftforge.fml.common.*;
 
 import java.io.*;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.Date;
 import java.util.regex.Pattern;
 
 public class MCLogger implements ILogger {
@@ -38,7 +41,7 @@ public class MCLogger implements ILogger {
     @Override
     public void logInfo(String message) {
         try {
-            writer.write("[" + Loader.instance().getLoaderState() + "][" + FMLCommonHandler.instance().getEffectiveSide() + "][INFO] " + stripMessage(message) + "\n");
+            writer.write("[" + LocalTime.now() + "]" + "[" + Loader.instance().getLoaderState() + "][" + FMLCommonHandler.instance().getEffectiveSide() + "][INFO] " + stripMessage(message) + "\n");
             writer.flush();
         } catch(IOException ex) {
             throw new RuntimeException(ex);
@@ -48,7 +51,7 @@ public class MCLogger implements ILogger {
     @Override
     public void logWarning(String message) {
         try {
-            writer.write("[" + Loader.instance().getLoaderState() + "][" + FMLCommonHandler.instance().getEffectiveSide() + "][WARNING] " + stripMessage(message) + "\n");
+            writer.write("[" + LocalTime.now() + "]" + "[" + Loader.instance().getLoaderState() + "][" + FMLCommonHandler.instance().getEffectiveSide() + "][WARNING] " + stripMessage(message) + "\n");
             writer.flush();
         } catch(IOException ex) {
             throw new RuntimeException(ex);
@@ -63,7 +66,7 @@ public class MCLogger implements ILogger {
     @Override
     public void logError(String message, Throwable exception) {
         try {
-            writer.write("[" + Loader.instance().getLoaderState() + "][" + FMLCommonHandler.instance().getEffectiveSide() + "][ERROR] " + stripMessage(message) + "\n");
+            writer.write("[" + LocalTime.now() + "]" + "[" + Loader.instance().getLoaderState() + "][" + FMLCommonHandler.instance().getEffectiveSide() + "][ERROR] " + stripMessage(message) + "\n");
             if(exception != null) {
                 exception.printStackTrace(printWriter);
             }

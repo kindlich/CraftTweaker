@@ -634,6 +634,10 @@ public final class MCRecipeManager implements IRecipeManager {
             return false;
         }
         
+        public int getCount() {
+            return this.outputs.size();
+        }
+        
         @Override
         public String describe() {
             return "Removing recipes for various outputs";

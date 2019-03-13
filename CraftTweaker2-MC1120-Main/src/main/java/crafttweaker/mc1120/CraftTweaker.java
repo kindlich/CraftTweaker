@@ -2,6 +2,7 @@ package crafttweaker.mc1120;
 
 import crafttweaker.*;
 import crafttweaker.annotations.*;
+import crafttweaker.api.minecraft.CraftTweakerMC;
 import crafttweaker.api.network.NetworkSide;
 import crafttweaker.mc1120.brewing.MCBrewing;
 import crafttweaker.mc1120.client.MCClient;
@@ -96,7 +97,9 @@ public class CraftTweaker {
     
     @EventHandler
     public void onPreInitialization(FMLPreInitializationEvent ev) {
+        CraftTweakerAPI.logDefault("Starting Preinit");
         PROXY.registerEvents();
+        CraftTweakerAPI.logDefault("Collecting and registering ASM-Data");
         ev.getAsmData().getAll(ZenRegister.class.getCanonicalName()).forEach(clazz -> {
             try {
                 Class claz = Class.forName(clazz.getClassName(), false, CraftTweaker.class.getClassLoader());
@@ -112,6 +115,7 @@ public class CraftTweaker {
                 CraftTweaker.LOG.catching(e);
             }
         });
+        CraftTweakerAPI.logDefault("Finished Collecting and registering ASM-Data");
         if(CraftTweakerPlatformUtils.isClient()) {
             CraftTweakerAPI.client = new MCClient();
         }
@@ -121,29 +125,40 @@ public class CraftTweaker {
         
         CraftTweakerAPI.tweaker.getOrCreateLoader("preinit").setMainName("preinit");
         CraftTweakerAPI.tweaker.loadScript(false, "preinit");
-        
+        CraftTweakerAPI.logDefault("Finished Preinit");
     }
     
     @EventHandler
     public void onPostInit(FMLPostInitializationEvent ev) {
+        CraftTweakerAPI.logDefault("Starting PostInit");
         MinecraftForge.EVENT_BUS.post(new ActionApplyEvent.Pre());
         try {
             MCRecipeManager.recipes = ForgeRegistries.RECIPES.getEntries();
+            CraftTweakerAPI.logDefault("Applying remove actions without ingredients, list size: " + MCRecipeManager.actionRemoveRecipesNoIngredients.getCount());
             MCRecipeManager.actionRemoveRecipesNoIngredients.apply();
+            CraftTweakerAPI.logDefault("Applying remove actions with ingredient, list site: " + MCRecipeManager.recipesToRemove.size());
             MCRecipeManager.recipesToRemove.forEach(CraftTweakerAPI::apply);
+            CraftTweakerAPI.logDefault("Applying crafting table additions, list site: " + MCRecipeManager.recipesToAdd.size());
             MCRecipeManager.recipesToAdd.forEach(CraftTweakerAPI::apply);
+            CraftTweakerAPI.logDefault("Applying furnace remocals, list site: " + MCFurnaceManager.recipesToRemove.size());
             MCFurnaceManager.recipesToRemove.forEach(CraftTweakerAPI::apply);
+            CraftTweakerAPI.logDefault("Applying furnace additions, list site: " + MCFurnaceManager.recipesToAdd.size());
             MCFurnaceManager.recipesToAdd.forEach(CraftTweakerAPI::apply);
+            CraftTweakerAPI.logDefault("Applying late actions , list site: " + LATE_ACTIONS.size());
             LATE_ACTIONS.forEach(CraftTweakerAPI::apply);
+            CraftTweakerAPI.logDefault("Finished with late actions");
             MCRecipeManager.recipes = ForgeRegistries.RECIPES.getEntries();
             
             //Cleanup
+            CraftTweakerAPI.logDefault("Starting cleaning up the recipe list");
             MCRecipeManager.cleanUpRecipeList();
+            CraftTweakerAPI.logDefault("Finished cleaning up the recipe list");
         } catch(Exception e) {
             CraftTweaker.LOG.catching(e);
             CraftTweakerAPI.logError("Error while applying actions", e);
         }
         MinecraftForge.EVENT_BUS.post(new ActionApplyEvent.Post());
+        CraftTweakerAPI.logDefault("Finished PostInit");
     }
     
     @EventHandler

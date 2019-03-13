@@ -71,8 +71,10 @@ public class MCBrewing implements IBrewingManager{
 			return;
 		}
 		
+		CraftTweakerAPI.logDefault("Started fixing Brewing recipes");
 		List <IBrewingRecipe> brewings = CraftTweakerHacks.getPrivateStaticObject(BrewingRecipeRegistry.class, "recipes");
         brewings.removeIf(VanillaBrewingRecipe.class::isInstance);
         brewings.add(new VanillaBrewingPlus(removedRecipes));
-	}
+        CraftTweakerAPI.logDefault("Finished fixing Brewing recipes");
+    }
 }
