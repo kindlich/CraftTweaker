@@ -1,12 +1,11 @@
 package com.crafttweaker.modtweaker;
 
-import com.crafttweaker.crafttweaker.zencode.CrTNativeModules;
-import net.minecraftforge.eventbus.api.EventPriority;
+import com.crafttweaker.crafttweaker.zencode.ZCLoader;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.NotNull;
 
 @Mod("modtweaker")
 public class Modtweaker {
@@ -16,10 +15,20 @@ public class Modtweaker {
     private static final Logger LOGGER = LogManager.getLogger();
     
     public Modtweaker() {
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(EventPriority.HIGH, this::setup);
     }
     
-    private void setup(final FMLCommonSetupEvent event) {
-        CrTNativeModules.registerModule("botania", "com.crafttweaker.modtweaker.botania");
+    @Mod.EventBusSubscriber
+    public static final class CommonEvents {
+        
+        private static boolean registered = false;
+        
+        @SubscribeEvent
+        public static void onModuleCollect(@NotNull ZCLoader.ModuleCollectionEvent event) {
+            if(!registered) {
+                //TODO: Can we calculate either the package or "normal" name?
+                event.addModule("mods.modtweaker.botania", "mods_botania", "com.crafttweaker.modtweaker.botania", "crafttweaker");
+                registered = true;
+            }
+        }
     }
 }

@@ -1,13 +1,14 @@
 package com.crafttweaker.crafttweaker;
 
 import com.crafttweaker.crafttweaker.vanilla.crafting.CrTRecipeManager;
-import com.crafttweaker.crafttweaker.zencode.ASMMagic;
-import com.crafttweaker.crafttweaker.zencode.CrTNativeModules;
+import com.crafttweaker.crafttweaker.zencode.FileAccessPreprocessor;
+import com.crafttweaker.crafttweaker.zencode.ZCLoader;
 import com.crafttweaker.crafttweaker.zencode.preprocessors.ModLoadedPreprocessor;
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.RecipeManager;
+import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -18,7 +19,9 @@ import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.NotNull;
 
+import java.io.File;
 import java.util.stream.Collectors;
 
 // The value here should match an entry in the META-INF/mods.toml file
@@ -48,10 +51,16 @@ public class CraftTweaker {
     
     private void setup(final FMLCommonSetupEvent event) {
         
-        ASMMagic.findAnnotatedClasses();
-        
-        CrTNativeModules.registerPreprocessorAll(new ModLoadedPreprocessor());
-        CrTNativeModules.run("crafttweaker");
+        final ZCLoader impl = new ZCLoader("crafttweaker");
+        final File scripts = new File("scripts");
+        if(!scripts.exists() && !scripts.mkdir()) {
+            throw new IllegalStateException("Could not create scripts dir");
+        } else if(!scripts.isDirectory()) {
+            throw new IllegalStateException("Scripts dir not a dir!");
+        }
+        final FileAccessPreprocessor access = new FileAccessPreprocessor(scripts, p -> p.getName().endsWith(".zs"));
+        access.addPreprocessor(new ModLoadedPreprocessor());
+        impl.execute(impl.toSemantic(access));
         
         // some preinit code
         LOGGER.info("HELLO FROM PREINIT");
@@ -98,6 +107,19 @@ public class CraftTweaker {
         public static void onBlocksRegistry(final RegistryEvent.Register<Block> blockRegistryEvent) {
             // register a new block here
             LOGGER.info("HELLO from Register Block");
+        }
+    }
+    
+    @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.FORGE)
+    public static class CommonModEvents {
+        private static boolean registered = false;
+        
+        @SubscribeEvent
+        public static void onModuleCollection(@NotNull ZCLoader.ModuleCollectionEvent event) {
+            if(!registered) {
+                event.addModule("crafttweaker", "crafttweaker", "com.crafttweaker.crafttweaker");
+                registered = true;
+            }
         }
     }
 }

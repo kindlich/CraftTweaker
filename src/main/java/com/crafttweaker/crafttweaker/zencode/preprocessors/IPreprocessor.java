@@ -1,6 +1,6 @@
 package com.crafttweaker.crafttweaker.zencode.preprocessors;
 
-import com.crafttweaker.crafttweaker.zencode.ScriptLoader;
+import com.crafttweaker.crafttweaker.zencode.ZCLoader;
 
 public interface IPreprocessor {
     
@@ -12,12 +12,12 @@ public interface IPreprocessor {
     /**
      * Do things
      */
-    void accept(ScriptLoader loader, String line);
+    void accept(ZCLoader loader, String line);
     
     /**
      * These preprocessors get the chance to prevent a file from being executed at all
      */
-    default boolean allowScriptToBeExecuted(ScriptLoader loader, String line) {
+    default boolean allowScriptToBeExecuted(ZCLoader loader, String line) {
         return true;
     }
     
