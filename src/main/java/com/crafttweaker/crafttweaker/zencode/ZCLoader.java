@@ -34,6 +34,7 @@ public class ZCLoader {
     
     private final ScriptingEngine engine;
     private final String name;
+    private final JavaNativeModule BEPModule;
     
     public ZCLoader(String name) {
         this.name = name;
@@ -51,6 +52,9 @@ public class ZCLoader {
         
         try {
             engine = loader.load();
+            final JavaNativeModule[] allModules = engine.getNativeModules().toArray(new JavaNativeModule[]{});
+            BEPModule = engine.createNativeModule("bracket_parsers", "", allModules);
+            engine.registerNativeProvided(BEPModule);
         } catch(CompileException e) {
             throw new IllegalStateException(e);
         }
@@ -93,20 +97,20 @@ public class ZCLoader {
     @NotNull
     @Contract(value = " -> new", pure = true)
     private BracketExpressionParser getParser() {
-        //TODO find a better way to get the FunctionalMemberReference
-        final JavaNativeModule module = engine.getNativeModules().stream().findAny().orElse(null);
-        if(module == null)
-            throw new IllegalStateException();
         final PrefixedBracketParser prefixedBracketParser = new PrefixedBracketParser(null);
         
         Stream.concat(bracketMethods.row(name).entrySet().stream(), bracketMethods.row("").entrySet().stream())
                 .forEach(entry -> {
-                    final FunctionalMemberRef method = module.loadStaticMethod(entry.getValue());
+                    final FunctionalMemberRef method = BEPModule.loadStaticMethod(entry.getValue());
                     final SimpleBracketParser parser = new SimpleBracketParser(engine.registry, method);
                     prefixedBracketParser.register(entry.getKey(), parser);
                 });
         
         return prefixedBracketParser;
+    }
+    
+    public String getName() {
+        return name;
     }
     
     public static final class ModuleCollectionEvent extends Event {
