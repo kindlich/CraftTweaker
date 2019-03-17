@@ -7,9 +7,7 @@ import org.openzen.zencode.shared.FileSourceFile;
 import org.openzen.zencode.shared.SourceFile;
 
 import java.io.*;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class FileAccessPreprocessor {
     
@@ -48,7 +46,10 @@ public class FileAccessPreprocessor {
                             value = line.substring(space + 1);
                         }
                     }
-                    evaluatedFiles.put(file, preprocessors.get(name), value);
+                    final IPreprocessor preprocessor = preprocessors.get(name);
+                    if(preprocessor != null)
+                        evaluatedFiles.put(file, preprocessor, value);
+                    //TODO Log warning that preprocessor was not registered to the FileAccess
                 }
             } catch(IOException e) {
                 e.printStackTrace();
@@ -68,6 +69,15 @@ public class FileAccessPreprocessor {
                         .stream()
                         .allMatch(entry -> entry.getKey().allowScriptToBeExecuted(engine, entry.getValue())))
                 .map(file -> new FileSourceFile(file.getName(), file))
+                .peek(file -> getPreprocessors(file.file, false).forEach((key, value) -> key.accept(engine, value)))
+                .map(file -> {
+                    SourceFile sourceFile = file;
+                    for(Map.Entry<IPreprocessor, String> entry : getPreprocessors(file.file, false).entrySet()) {
+                        sourceFile = entry.getKey().modifySourceFile(engine, entry.getValue(), file);
+                    }
+                    return sourceFile;
+                })
+                
                 .toArray(SourceFile[]::new);
     }
 }

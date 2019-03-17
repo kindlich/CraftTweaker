@@ -3,7 +3,7 @@ package com.crafttweaker.crafttweaker;
 import com.crafttweaker.crafttweaker.vanilla.crafting.CrTRecipeManager;
 import com.crafttweaker.crafttweaker.zencode.FileAccessPreprocessor;
 import com.crafttweaker.crafttweaker.zencode.ZCLoader;
-import com.crafttweaker.crafttweaker.zencode.preprocessors.ModLoadedPreprocessor;
+import com.crafttweaker.crafttweaker.zencode.preprocessors.*;
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.crafting.IRecipe;
@@ -60,6 +60,9 @@ public class CraftTweaker {
         }
         final FileAccessPreprocessor access = new FileAccessPreprocessor(scripts, p -> p.getName().endsWith(".zs"));
         access.addPreprocessor(new ModLoadedPreprocessor());
+        access.addPreprocessor(new LoaderPreprocessor());
+        access.addPreprocessor(new DebugPreprocessor());
+        access.addPreprocessor(new ReplacePreprocessor());
         impl.execute(impl.toSemantic(access));
         
         // some preinit code
