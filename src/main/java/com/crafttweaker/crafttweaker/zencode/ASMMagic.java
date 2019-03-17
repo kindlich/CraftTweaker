@@ -10,6 +10,7 @@ import org.apache.logging.log4j.Level;
 import org.objectweb.asm.Type;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ASMMagic {
@@ -31,12 +32,17 @@ public class ASMMagic {
                 } else if(Type.getType(SimpleBracketRegistration.class).equals(annotation.getAnnotationType())) {
                     try {
                         final String name = (String) annotation.getAnnotationData().get("name");
-                        final String loader = (String) annotation.getAnnotationData().get("loader");
+                        
+                        //TODO Assert that Forge won't change this file type
+                        // (why would you change it form array to list in the first place?)
+                        final List<String> loaders = (List<String>) annotation.getAnnotationData().get("loaders");
                         final Method method = annotation.getClass()
                                 .getClassLoader()
                                 .loadClass(annotation.getClassType().getClassName())
                                 .getDeclaredMethod(annotation.getMemberName().split("\\(", 2)[0], String.class);
-                        bracketMethods.put(loader, name, method);
+                        for(String loader : loaders) {
+                            bracketMethods.put(loader, name, method);
+                        }
                     } catch(ClassNotFoundException | NoSuchMethodException e) {
                         CraftTweaker.getLogger().catching(Level.ERROR, e);
                     }

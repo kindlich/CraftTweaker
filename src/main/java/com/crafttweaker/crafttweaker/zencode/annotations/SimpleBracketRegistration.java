@@ -6,7 +6,7 @@ import java.lang.annotation.*;
 @Target(ElementType.METHOD)
 public @interface SimpleBracketRegistration {
     
-    String loader();
+    String[] loaders() default {"crafttweaker"};
     
     String name();
 }

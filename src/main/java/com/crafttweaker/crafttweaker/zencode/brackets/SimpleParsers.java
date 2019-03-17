@@ -14,13 +14,13 @@ import java.util.stream.Collectors;
 
 public class SimpleParsers {
     
-    @SimpleBracketRegistration(name = "test", loader = "crafttweaker")
+    @SimpleBracketRegistration(name = "test", loaders = "crafttweaker")
     public static String testAbc(String in) {
         return in;
     }
     
     @Nullable
-    @SimpleBracketRegistration(name = "item", loader = "crafttweaker")
+    @SimpleBracketRegistration(name = "item", loaders = "crafttweaker")
     public static IItemStack createItemStack(String input) {
         final String[] split = input.split(":");
         final String stringToUse;
