@@ -1,6 +1,7 @@
 package com.crafttweaker.crafttweaker;
 
 import com.crafttweaker.crafttweaker.vanilla.crafting.CrTRecipeManager;
+import com.crafttweaker.crafttweaker.vanilla.furnace.CrTFurnaceManager;
 import com.crafttweaker.crafttweaker.zencode.FileAccessPreprocessor;
 import com.crafttweaker.crafttweaker.zencode.ZCLoader;
 import com.crafttweaker.crafttweaker.zencode.preprocessors.*;
@@ -8,7 +9,6 @@ import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.RecipeManager;
-import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -96,7 +96,11 @@ public class CraftTweaker {
         // do something when the server starts
         LOGGER.info("HELLO from server starting");
         final RecipeManager vanillaRecipeManager = event.getServer().getRecipeManager();
-        for(IRecipe addedRecipe : CrTRecipeManager.INSTANCE.getAddedRecipes()) {
+        for(final IRecipe addedRecipe : CrTRecipeManager.INSTANCE.getAddedRecipes()) {
+            vanillaRecipeManager.addRecipe(addedRecipe);
+        }
+        
+        for(final IRecipe addedRecipe : CrTFurnaceManager.INSTANCE.getAddedRecipes()) {
             vanillaRecipeManager.addRecipe(addedRecipe);
         }
     }
@@ -115,6 +119,7 @@ public class CraftTweaker {
     
     @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.FORGE)
     public static class CommonModEvents {
+        
         private static boolean registered = false;
         
         @SubscribeEvent

@@ -2,6 +2,7 @@ package com.crafttweaker.crafttweaker.vanilla.crafting.internal;
 
 import com.crafttweaker.crafttweaker.api.ArrayUtil;
 import com.crafttweaker.crafttweaker.ingredient.IIngredient;
+import com.crafttweaker.crafttweaker.internal.SerializerStub;
 import com.crafttweaker.crafttweaker.items.IItemStack;
 import com.crafttweaker.crafttweaker.items.MCItemStack;
 import com.crafttweaker.crafttweaker.items.MCMutableItemStack;

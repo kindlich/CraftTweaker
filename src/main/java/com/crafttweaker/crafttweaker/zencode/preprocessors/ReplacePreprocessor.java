@@ -3,7 +3,6 @@ package com.crafttweaker.crafttweaker.zencode.preprocessors;
 import com.crafttweaker.crafttweaker.zencode.ZCLoader;
 import org.openzen.zencode.shared.LiteralSourceFile;
 import org.openzen.zencode.shared.SourceFile;
-import org.openzen.zencode.shared.VirtualSourceFile;
 
 import java.io.BufferedReader;
 import java.io.IOException;

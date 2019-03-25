@@ -1,6 +1,7 @@
 package com.crafttweaker.crafttweaker.items;
 
 import com.crafttweaker.crafttweaker.ingredient.IIngredient;
+import com.crafttweaker.crafttweaker.ingredient.IIngredientTransformer;
 import com.crafttweaker.crafttweaker.zencode.annotations.ZenRegister;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.item.ItemStack;
@@ -28,4 +29,9 @@ public interface IItemStack extends IIngredient {
     
     @Override
     ItemStack getInternal();
+    
+    @ZenCodeType.Method
+    default IItemStack addTransformer(IIngredientTransformer transformer) {
+        return new MCItemStackTransformed(this, transformer);
+    }
 }

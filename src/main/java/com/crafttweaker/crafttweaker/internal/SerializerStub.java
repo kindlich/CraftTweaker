@@ -1,4 +1,4 @@
-package com.crafttweaker.crafttweaker.vanilla.crafting.internal;
+package com.crafttweaker.crafttweaker.internal;
 
 import com.google.gson.JsonObject;
 import mcp.MethodsReturnNonnullByDefault;
@@ -11,11 +11,11 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-class SerializerStub<T extends IRecipe> implements IRecipeSerializer<T> {
+public class SerializerStub<T extends IRecipe> implements IRecipeSerializer<T> {
     
     private final T recipe;
     
-    SerializerStub(T recipe) {
+    public SerializerStub(T recipe) {
         this.recipe = recipe;
     }
     
