@@ -5,7 +5,8 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.jetbrains.annotations.NotNull;
+
+import javax.annotation.Nonnull;
 
 @Mod("modtweaker")
 public class Modtweaker {
@@ -23,7 +24,7 @@ public class Modtweaker {
         private static boolean registered = false;
         
         @SubscribeEvent
-        public static void onModuleCollect(@NotNull ZCLoader.ModuleCollectionEvent event) {
+        public static void onModuleCollect(@Nonnull ZCLoader.ModuleCollectionEvent event) {
             if(!registered) {
                 //TODO: Can we calculate either the package or "normal" name?
                 event.addModule("mods.modtweaker.botania", "mods_botania", "com.crafttweaker.modtweaker.botania", "crafttweaker");

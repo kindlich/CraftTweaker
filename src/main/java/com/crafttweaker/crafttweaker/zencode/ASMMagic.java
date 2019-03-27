@@ -1,6 +1,7 @@
 package com.crafttweaker.crafttweaker.zencode;
 
 import com.crafttweaker.crafttweaker.CraftTweaker;
+import com.crafttweaker.crafttweaker.api.CraftTweakeAPI;
 import com.crafttweaker.crafttweaker.zencode.annotations.SimpleBracketRegistration;
 import com.crafttweaker.crafttweaker.zencode.annotations.ZenRegister;
 import com.google.common.collect.Table;
@@ -28,6 +29,7 @@ public class ASMMagic {
                                             .loadClass(annotation.getClassType().getClassName()));
                     } catch(ClassNotFoundException e) {
                         CraftTweaker.getLogger().catching(Level.ERROR, e);
+                        CraftTweakeAPI.logger.logError(e);
                     }
                 } else if(Type.getType(SimpleBracketRegistration.class).equals(annotation.getAnnotationType())) {
                     try {
@@ -45,6 +47,7 @@ public class ASMMagic {
                         }
                     } catch(ClassNotFoundException | NoSuchMethodException e) {
                         CraftTweaker.getLogger().catching(Level.ERROR, e);
+                        CraftTweakeAPI.logger.logError(e);
                     }
                 }
             }

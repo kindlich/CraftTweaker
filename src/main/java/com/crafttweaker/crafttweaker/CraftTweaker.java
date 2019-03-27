@@ -1,5 +1,9 @@
 package com.crafttweaker.crafttweaker;
 
+import com.crafttweaker.crafttweaker.api.CraftTweakeAPI;
+import com.crafttweaker.crafttweaker.api.PrintLogger;
+import com.crafttweaker.crafttweaker.api.action.AbstractAction;
+import com.crafttweaker.crafttweaker.vanilla.brewing.CrTBrewingManager;
 import com.crafttweaker.crafttweaker.vanilla.crafting.CrTRecipeManager;
 import com.crafttweaker.crafttweaker.vanilla.furnace.CrTFurnaceManager;
 import com.crafttweaker.crafttweaker.zencode.FileAccessPreprocessor;
@@ -10,6 +14,8 @@ import net.minecraft.init.Blocks;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.RecipeManager;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.brewing.BrewingRecipeRegistry;
+import net.minecraftforge.common.brewing.IBrewingRecipe;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.InterModComms;
@@ -17,11 +23,13 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.*;
 import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.jetbrains.annotations.NotNull;
 
+import javax.annotation.Nonnull;
 import java.io.File;
+import java.io.IOException;
 import java.util.stream.Collectors;
 
 // The value here should match an entry in the META-INF/mods.toml file
@@ -30,6 +38,7 @@ public class CraftTweaker {
     
     // Directly reference a log4j logger.
     private static final Logger LOGGER = LogManager.getLogger();
+    
     
     public CraftTweaker() {
         // Register the setup method for modloading
@@ -50,8 +59,14 @@ public class CraftTweaker {
     }
     
     private void setup(final FMLCommonSetupEvent event) {
-        
-        final ZCLoader impl = new ZCLoader("crafttweaker");
+    
+        try {
+            CraftTweakeAPI.logger.addLogger(new PrintLogger(new File("crafttweaker.log")));
+        } catch(IOException e) {
+            LOGGER.catching(Level.ERROR, e);
+        }
+    
+        final ZCLoader zcLoader = new ZCLoader("crafttweaker");
         final File scripts = new File("scripts");
         if(!scripts.exists() && !scripts.mkdir()) {
             throw new IllegalStateException("Could not create scripts dir");
@@ -63,11 +78,11 @@ public class CraftTweaker {
         access.addPreprocessor(new LoaderPreprocessor());
         access.addPreprocessor(new DebugPreprocessor());
         access.addPreprocessor(new ReplacePreprocessor());
-        impl.execute(impl.toSemantic(access));
+        zcLoader.execute(zcLoader.toSemantic(access));
         
-        // some preinit code
-        LOGGER.info("HELLO FROM PREINIT");
-        LOGGER.info("DIRT BLOCK >> {}", Blocks.DIRT.getRegistryName());
+        CraftTweakeAPI.logger.logInfo("HELLO FROM PREINIT");
+        CraftTweakeAPI.logger.logInfo("DIRT BLOCK >> " + Blocks.DIRT.getRegistryName());
+        
     }
     
     private void doClientStuff(final FMLClientSetupEvent event) {
@@ -94,15 +109,14 @@ public class CraftTweaker {
     @SubscribeEvent
     public void onServerStarting(FMLServerStartingEvent event) {
         // do something when the server starts
-        LOGGER.info("HELLO from server starting");
+        CraftTweakeAPI.logger.logInfo("HELLO from server starting");
         final RecipeManager vanillaRecipeManager = event.getServer().getRecipeManager();
-        for(final IRecipe addedRecipe : CrTRecipeManager.INSTANCE.getAddedRecipes()) {
-            vanillaRecipeManager.addRecipe(addedRecipe);
-        }
-        
-        for(final IRecipe addedRecipe : CrTFurnaceManager.INSTANCE.getAddedRecipes()) {
-            vanillaRecipeManager.addRecipe(addedRecipe);
-        }
+        CrTRecipeManager.vanillaRecipeManager = vanillaRecipeManager;
+        CrTFurnaceManager.vanillaRecipeManager = vanillaRecipeManager;
+    
+        CrTRecipeManager.INSTANCE.getAddedRecipes().forEach(CraftTweakeAPI::apply);
+        CrTFurnaceManager.INSTANCE.getAddedRecipes().forEach(CraftTweakeAPI::apply);
+        CrTBrewingManager.INSTANCE.getAddedRecipes().forEach(CraftTweakeAPI::apply);
     }
     
     // You can use EventBusSubscriber to automatically subscribe events on the contained class (this is subscribing to the MOD
@@ -113,7 +127,7 @@ public class CraftTweaker {
         @SubscribeEvent
         public static void onBlocksRegistry(final RegistryEvent.Register<Block> blockRegistryEvent) {
             // register a new block here
-            LOGGER.info("HELLO from Register Block");
+            CraftTweakeAPI.logger.logInfo("HELLO from Register Block");
         }
     }
     
@@ -123,7 +137,7 @@ public class CraftTweaker {
         private static boolean registered = false;
         
         @SubscribeEvent
-        public static void onModuleCollection(@NotNull ZCLoader.ModuleCollectionEvent event) {
+        public static void onModuleCollection(@Nonnull ZCLoader.ModuleCollectionEvent event) {
             if(!registered) {
                 event.addModule("crafttweaker", "crafttweaker", "com.crafttweaker.crafttweaker");
                 registered = true;

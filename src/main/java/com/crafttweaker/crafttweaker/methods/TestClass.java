@@ -1,5 +1,6 @@
 package com.crafttweaker.crafttweaker.methods;
 
+import com.crafttweaker.crafttweaker.api.CraftTweakeAPI;
 import com.crafttweaker.crafttweaker.zencode.annotations.ZenRegister;
 import org.openzen.zencode.java.ZenCodeGlobals;
 import org.openzen.zencode.java.ZenCodeType;
@@ -15,11 +16,11 @@ public class TestClass {
     
     @ZenCodeGlobals.Global
     public static void println(String toPrint) {
-        System.out.println(toPrint);
+        CraftTweakeAPI.logger.logInfo(toPrint);
     }
     
     @ZenCodeType.Method
     public void print() {
-        System.out.println("Hello");
+        CraftTweakeAPI.logger.logInfo("Hello");
     }
 }

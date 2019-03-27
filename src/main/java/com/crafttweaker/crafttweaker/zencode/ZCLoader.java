@@ -1,11 +1,12 @@
 package com.crafttweaker.crafttweaker.zencode;
 
+import com.crafttweaker.crafttweaker.api.CraftTweakeAPI;
+import com.crafttweaker.crafttweaker.api.ILogger;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.Event;
 import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.openzen.zencode.java.JavaNativeLoader;
 import org.openzen.zencode.java.JavaNativeModule;
@@ -19,7 +20,9 @@ import org.openzen.zenscript.lexer.ParseException;
 import org.openzen.zenscript.parser.BracketExpressionParser;
 import org.openzen.zenscript.parser.PrefixedBracketParser;
 import org.openzen.zenscript.parser.SimpleBracketParser;
+import org.openzen.zenscript.validator.ValidationLogEntry;
 
+import javax.annotation.Nonnull;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -48,7 +51,6 @@ public class ZCLoader {
         }
         
         MinecraftForge.EVENT_BUS.post(new ModuleCollectionEvent(loader, root));
-        System.out.println();
         
         try {
             engine = loader.load();
@@ -68,7 +70,7 @@ public class ZCLoader {
     }
     
     @Nullable
-    public SemanticModule toSemantic(@NotNull FileAccess access) {
+    public SemanticModule toSemantic(@Nonnull FileAccess access) {
         try {
             return engine.createScriptedModule(name, access.getSourceFiles(false), getParser(), new FunctionParameter[]{});
         } catch(ParseException e) {
@@ -78,23 +80,26 @@ public class ZCLoader {
     }
     
     @Nullable
-    public SemanticModule toSemantic(@NotNull FileAccessPreprocessor access) {
+    public SemanticModule toSemantic(@Nonnull FileAccessPreprocessor access) {
         try {
-            return engine.createScriptedModule(name, access.getSourceFiles(this, false), getParser(), new FunctionParameter[]{});
+            return engine.createScriptedModule(name, access.getSourceFiles(this, false), getParser(), new FunctionParameter[]{}, s -> CraftTweakeAPI.logger
+                    .logError(s.toString()), v -> CraftTweakeAPI.logger.log(v.position + ": " + v.message, v.kind == ValidationLogEntry.Kind.ERROR ? ILogger.LogLevel.ERROR : ILogger.LogLevel.WARNING)
+            );
         } catch(ParseException e) {
             e.printStackTrace();
-        }
-        return null;
+        } return null;
     }
     
     public void execute(SemanticModule module) {
-        if(!module.isValid())
-            throw new IllegalStateException("Invalid!");
+        if(!module.isValid()) {
+            CraftTweakeAPI.logger.logError("Module Invalid, won't execute!");
+            return;
+        }
         engine.registerCompiled(module);
         engine.run(Collections.emptyMap(), new Loader(this.getClass().getClassLoader()));
     }
     
-    @NotNull
+    @Nonnull
     @Contract(value = " -> new", pure = true)
     private BracketExpressionParser getParser() {
         final PrefixedBracketParser prefixedBracketParser = new PrefixedBracketParser(null);
