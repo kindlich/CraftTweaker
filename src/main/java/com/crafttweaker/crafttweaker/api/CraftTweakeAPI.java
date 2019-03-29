@@ -1,10 +1,12 @@
 package com.crafttweaker.crafttweaker.api;
 
 import com.crafttweaker.crafttweaker.api.action.AbstractAction;
+import com.crafttweaker.crafttweaker.api.logger.MultiLogger;
 
 import javax.annotation.Nonnull;
 
 public class CraftTweakeAPI {
+    
     public static final MultiLogger logger = new MultiLogger();
     
     public static void apply(@Nonnull AbstractAction abstractAction) {

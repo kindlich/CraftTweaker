@@ -3,6 +3,7 @@ package com.crafttweaker.crafttweaker.vanilla.crafting;
 import com.crafttweaker.crafttweaker.ingredient.IIngredient;
 import com.crafttweaker.crafttweaker.items.IItemStack;
 import com.crafttweaker.crafttweaker.vanilla.crafting.internal.ActionAddCraftingRecipe;
+import com.crafttweaker.crafttweaker.vanilla.crafting.internal.ActionRemoveRecipeNoIngredients;
 import com.crafttweaker.crafttweaker.zencode.annotations.ZenRegister;
 import net.minecraft.item.crafting.RecipeManager;
 import org.openzen.zencode.java.ZenCodeGlobals;
@@ -30,6 +31,11 @@ public class CrTRecipeManager {
     @ZenCodeType.Method
     public void addShapeless(String recipeName, IItemStack output, IIngredient[] ingredients, @ZenCodeType.Nullable RecipeFunctionShapeless recipeFunction) {
         addedRecipes.add(new ActionAddCraftingRecipe.Shapeless(recipeName, output, ingredients, recipeFunction));
+    }
+    
+    @ZenCodeType.Method
+    public void removeRecipe(IIngredient output) {
+        ActionRemoveRecipeNoIngredients.INSTANCE.addOutput(output);
     }
     
     public List<ActionAddCraftingRecipe> getAddedRecipes() {

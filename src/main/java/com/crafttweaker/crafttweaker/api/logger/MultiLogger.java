@@ -1,4 +1,4 @@
-package com.crafttweaker.crafttweaker.api;
+package com.crafttweaker.crafttweaker.api.logger;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -29,6 +29,20 @@ public class MultiLogger implements ILogger {
     }
     
     @Override
+    public void logInternal(@Nullable String message) {
+        for(ILogger child : children) {
+            child.logInternal(message);
+        }
+    }
+    
+    @Override
+    public void logTrace(@Nullable String message) {
+        for(ILogger child : children) {
+            child.logTrace(message);
+        }
+    }
+    
+    @Override
     public void logDebug(@Nullable String message) {
         for(ILogger child : children) {
             child.logDebug(message);
@@ -39,6 +53,13 @@ public class MultiLogger implements ILogger {
     public void logInfo(@Nullable String message) {
         for(ILogger child : children) {
             child.logInfo(message);
+        }
+    }
+    
+    @Override
+    public void logCommand(@Nullable String message) {
+        for(ILogger child : children) {
+            child.logCommand(message);
         }
     }
     
@@ -67,6 +88,13 @@ public class MultiLogger implements ILogger {
     public void logFatal(@Nullable String message) {
         for(ILogger child : children) {
             child.logFatal(message);
+        }
+    }
+    
+    @Override
+    public void setUseTimeStamps(boolean useTimeStamps) {
+        for(ILogger child : children) {
+            child.setUseTimeStamps(useTimeStamps);
         }
     }
 }

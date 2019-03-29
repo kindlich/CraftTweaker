@@ -1,21 +1,20 @@
 package com.crafttweaker.crafttweaker;
 
 import com.crafttweaker.crafttweaker.api.CraftTweakeAPI;
-import com.crafttweaker.crafttweaker.api.PrintLogger;
-import com.crafttweaker.crafttweaker.api.action.AbstractAction;
+import com.crafttweaker.crafttweaker.api.logger.ILogger;
+import com.crafttweaker.crafttweaker.api.logger.PrintLogger;
 import com.crafttweaker.crafttweaker.vanilla.brewing.CrTBrewingManager;
 import com.crafttweaker.crafttweaker.vanilla.crafting.CrTRecipeManager;
+import com.crafttweaker.crafttweaker.vanilla.crafting.internal.ActionRemoveRecipeNoIngredients;
 import com.crafttweaker.crafttweaker.vanilla.furnace.CrTFurnaceManager;
 import com.crafttweaker.crafttweaker.zencode.FileAccessPreprocessor;
+import com.crafttweaker.crafttweaker.zencode.PriorityPreprocessor;
 import com.crafttweaker.crafttweaker.zencode.ZCLoader;
 import com.crafttweaker.crafttweaker.zencode.preprocessors.*;
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
-import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.RecipeManager;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.brewing.BrewingRecipeRegistry;
-import net.minecraftforge.common.brewing.IBrewingRecipe;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.InterModComms;
@@ -29,6 +28,7 @@ import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Nonnull;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.stream.Collectors;
 
@@ -61,8 +61,8 @@ public class CraftTweaker {
     private void setup(final FMLCommonSetupEvent event) {
     
         try {
-            CraftTweakeAPI.logger.addLogger(new PrintLogger(new File("crafttweaker.log")));
-        } catch(IOException e) {
+            CraftTweakeAPI.logger.addLogger(new PrintLogger(new File("crafttweaker.log"), ILogger.LogLevel.TRACE, false));
+        } catch(FileNotFoundException e) {
             LOGGER.catching(Level.ERROR, e);
         }
     
@@ -74,8 +74,10 @@ public class CraftTweaker {
             throw new IllegalStateException("Scripts dir not a dir!");
         }
         final FileAccessPreprocessor access = new FileAccessPreprocessor(scripts, p -> p.getName().endsWith(".zs"));
+        
+        access.addDefaultPreprocessor(new LoaderPreprocessor(), "crafttweaker");
+        
         access.addPreprocessor(new ModLoadedPreprocessor());
-        access.addPreprocessor(new LoaderPreprocessor());
         access.addPreprocessor(new DebugPreprocessor());
         access.addPreprocessor(new ReplacePreprocessor());
         zcLoader.execute(zcLoader.toSemantic(access));
@@ -117,6 +119,7 @@ public class CraftTweaker {
         CrTRecipeManager.INSTANCE.getAddedRecipes().forEach(CraftTweakeAPI::apply);
         CrTFurnaceManager.INSTANCE.getAddedRecipes().forEach(CraftTweakeAPI::apply);
         CrTBrewingManager.INSTANCE.getAddedRecipes().forEach(CraftTweakeAPI::apply);
+        CraftTweakeAPI.apply(ActionRemoveRecipeNoIngredients.INSTANCE);
     }
     
     // You can use EventBusSubscriber to automatically subscribe events on the contained class (this is subscribing to the MOD

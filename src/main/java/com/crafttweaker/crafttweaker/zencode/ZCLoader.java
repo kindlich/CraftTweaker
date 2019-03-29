@@ -1,7 +1,7 @@
 package com.crafttweaker.crafttweaker.zencode;
 
 import com.crafttweaker.crafttweaker.api.CraftTweakeAPI;
-import com.crafttweaker.crafttweaker.api.ILogger;
+import com.crafttweaker.crafttweaker.api.logger.ILogger;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 import net.minecraftforge.common.MinecraftForge;
@@ -12,6 +12,7 @@ import org.openzen.zencode.java.JavaNativeLoader;
 import org.openzen.zencode.java.JavaNativeModule;
 import org.openzen.zencode.java.ScriptingEngine;
 import org.openzen.zencode.shared.CompileException;
+import org.openzen.zencode.shared.SourceFile;
 import org.openzen.zenscript.codemodel.FunctionParameter;
 import org.openzen.zenscript.codemodel.SemanticModule;
 import org.openzen.zenscript.codemodel.definition.ZSPackage;
@@ -82,8 +83,9 @@ public class ZCLoader {
     @Nullable
     public SemanticModule toSemantic(@Nonnull FileAccessPreprocessor access) {
         try {
-            return engine.createScriptedModule(name, access.getSourceFiles(this, false), getParser(), new FunctionParameter[]{}, s -> CraftTweakeAPI.logger
-                    .logError(s.toString()), v -> CraftTweakeAPI.logger.log(v.position + ": " + v.message, v.kind == ValidationLogEntry.Kind.ERROR ? ILogger.LogLevel.ERROR : ILogger.LogLevel.WARNING)
+            final SourceFile[] sourceFiles = access.getSourceFiles(this, false);
+            return engine.createScriptedModule(name, sourceFiles, getParser(), new FunctionParameter[]{}, s -> CraftTweakeAPI.logger
+                    .logError(s.toString()), v -> CraftTweakeAPI.logger.log(v.position + ": " + v.message, v.kind == ValidationLogEntry.Kind.ERROR ? ILogger.LogLevel.ERROR : ILogger.LogLevel.WARNING), s -> CraftTweakeAPI.logger.logDebug("Parsing " + s.getFilename())
             );
         } catch(ParseException e) {
             e.printStackTrace();
@@ -124,7 +126,7 @@ public class ZCLoader {
         private final JavaNativeLoader loader;
         private final ZSPackage root;
         
-        public ModuleCollectionEvent(JavaNativeLoader loader, ZSPackage root) {
+        ModuleCollectionEvent(JavaNativeLoader loader, ZSPackage root) {
             this.loader = loader;
             this.root = root;
             registeredModules = new ArrayList<>();
