@@ -2,23 +2,24 @@ package com.crafttweaker.crafttweaker.api.logger;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.io.Closeable;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class MultiLogger implements ILogger {
     
+    
     private final List<ILogger> children = new ArrayList<>();
     
     public void addLogger(ILogger logger) {
-        children.add(logger);
+        if(logger != null)
+            children.add(logger);
     }
     
-    public void closeChildren() throws IOException {
+    @Override
+    public void close() throws IOException {
         for(ILogger child : children)
-            if(child instanceof Closeable)
-                ((Closeable) child).close();
+            child.close();
     }
     
     @Override

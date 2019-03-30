@@ -1,14 +1,13 @@
 package com.crafttweaker.crafttweaker;
 
 import com.crafttweaker.crafttweaker.api.CraftTweakeAPI;
-import com.crafttweaker.crafttweaker.api.logger.ILogger;
+import com.crafttweaker.crafttweaker.api.logger.LogLevel;
 import com.crafttweaker.crafttweaker.api.logger.PrintLogger;
 import com.crafttweaker.crafttweaker.vanilla.brewing.CrTBrewingManager;
 import com.crafttweaker.crafttweaker.vanilla.crafting.CrTRecipeManager;
 import com.crafttweaker.crafttweaker.vanilla.crafting.internal.ActionRemoveRecipeNoIngredients;
 import com.crafttweaker.crafttweaker.vanilla.furnace.CrTFurnaceManager;
 import com.crafttweaker.crafttweaker.zencode.FileAccessPreprocessor;
-import com.crafttweaker.crafttweaker.zencode.PriorityPreprocessor;
 import com.crafttweaker.crafttweaker.zencode.ZCLoader;
 import com.crafttweaker.crafttweaker.zencode.preprocessors.*;
 import net.minecraft.block.Block;
@@ -29,7 +28,6 @@ import org.apache.logging.log4j.Logger;
 import javax.annotation.Nonnull;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.stream.Collectors;
 
 // The value here should match an entry in the META-INF/mods.toml file
@@ -61,7 +59,7 @@ public class CraftTweaker {
     private void setup(final FMLCommonSetupEvent event) {
     
         try {
-            CraftTweakeAPI.logger.addLogger(new PrintLogger(new File("crafttweaker.log"), ILogger.LogLevel.TRACE, false));
+            CraftTweakeAPI.logger.addLogger(new PrintLogger(new File("crafttweaker.log"), LogLevel.TRACE, false));
         } catch(FileNotFoundException e) {
             LOGGER.catching(Level.ERROR, e);
         }

@@ -1,7 +1,7 @@
 package com.crafttweaker.crafttweaker.zencode;
 
 import com.crafttweaker.crafttweaker.api.CraftTweakeAPI;
-import com.crafttweaker.crafttweaker.api.logger.ILogger;
+import com.crafttweaker.crafttweaker.api.logger.LogLevel;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 import net.minecraftforge.common.MinecraftForge;
@@ -85,7 +85,7 @@ public class ZCLoader {
         try {
             final SourceFile[] sourceFiles = access.getSourceFiles(this, false);
             return engine.createScriptedModule(name, sourceFiles, getParser(), new FunctionParameter[]{}, s -> CraftTweakeAPI.logger
-                    .logError(s.toString()), v -> CraftTweakeAPI.logger.log(v.position + ": " + v.message, v.kind == ValidationLogEntry.Kind.ERROR ? ILogger.LogLevel.ERROR : ILogger.LogLevel.WARNING), s -> CraftTweakeAPI.logger.logDebug("Parsing " + s.getFilename())
+                    .logError(s.toString()), v -> CraftTweakeAPI.logger.log(v.position + ": " + v.message, v.kind == ValidationLogEntry.Kind.ERROR ? LogLevel.ERROR : LogLevel.WARNING), s -> CraftTweakeAPI.logger.logDebug("Parsing " + s.getFilename())
             );
         } catch(ParseException e) {
             e.printStackTrace();

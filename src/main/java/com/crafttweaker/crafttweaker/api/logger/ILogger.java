@@ -1,14 +1,14 @@
 package com.crafttweaker.crafttweaker.api.logger;
 
 import com.crafttweaker.crafttweaker.zencode.annotations.ZenRegister;
-import org.jetbrains.annotations.Contract;
 import org.openzen.zencode.java.ZenCodeType;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.io.Closeable;
 
 @ZenRegister
-public interface ILogger {
+public interface ILogger extends Closeable {
     
     @ZenCodeType.Method
     void setLogLevel(LogLevel logLevel);
@@ -72,26 +72,6 @@ public interface ILogger {
     
     @ZenCodeType.Method
     void setUseTimeStamps(boolean useTimeStamps);
-    
-    @ZenRegister
-    enum LogLevel {
-        INTERNAL, TRACE, DEBUG, INFO, COMMAND, WARNING, ERROR, FATAL;
-        
-        
-        LogLevel() {
-        }
-        
-        @Nonnull
-        @Contract(pure = true)
-        public final String getPrefix() {
-            return "[" + this.name() + "]";
-        }
-        
-        @Contract(pure = true)
-        public boolean canLog(@Nonnull LogLevel messageLevel) {
-            return this.ordinal() <= messageLevel.ordinal();
-        }
-    }
     
     
 }

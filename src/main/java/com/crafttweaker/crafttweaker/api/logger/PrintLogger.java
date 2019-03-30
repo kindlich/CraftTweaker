@@ -7,7 +7,7 @@ import javax.annotation.Nullable;
 import java.io.*;
 import java.time.LocalTime;
 
-public class PrintLogger implements ILogger, Closeable {
+public class PrintLogger implements ILogger {
     
     private final PrintWriter writer;
     private LogLevel logLevel;
