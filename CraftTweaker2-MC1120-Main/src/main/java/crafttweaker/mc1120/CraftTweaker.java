@@ -23,6 +23,9 @@ import crafttweaker.mc1120.util.CraftTweakerPlatformUtils;
 import crafttweaker.mc1120.vanilla.MCVanilla;
 import crafttweaker.runtime.IScriptProvider;
 import crafttweaker.runtime.providers.*;
+import crafttweaker.tests.generic_full.*;
+import crafttweaker.tests.generic_full.type.*;
+import crafttweaker.zenscript.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.util.*;
 import net.minecraft.server.MinecraftServer;
@@ -40,6 +43,7 @@ import java.util.*;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import stanhebben.zenscript.type.*;
 
 /**
  * Main mod class. Performs some general logic, initialization of the API and
@@ -77,6 +81,7 @@ public class CraftTweaker {
         CrafttweakerImplementationAPI.init(new MCOreDict(), recipes = new MCRecipeManager(), new MCFurnaceManager(), MCGame.INSTANCE, new MCLoadedMods(), new MCFormatter(), new MCVanilla(), new MCItemUtils(), new MCBrewing());
         CrafttweakerImplementationAPI.logger.addLogger(new MCLogger(new File("crafttweaker.log")));
         CrafttweakerImplementationAPI.platform = MCPlatformFunctions.INSTANCE;
+        GlobalRegistry.getTypes().getTypeMap().put(MySequence.class, new ZenTypeGenericSequence(ZenType.ANY));
         
         File globalDir = new File("scripts");
         if(!globalDir.exists())
