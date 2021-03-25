@@ -18,6 +18,7 @@ buildscript {
         classpath "gradle.plugin.com.matthewprenger:CurseGradle:1.4.0"
         classpath "gradle.plugin.org.ec4j.gradle:editorconfig-gradle-plugin:0.0.3"
         classpath group: 'com.diluv.schoomp', name: 'Schoomp', version: '1.1.0'
+        classpath "org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:3.1.1"
     }
 }
 
@@ -28,8 +29,11 @@ apply plugin: 'eclipse'
 apply plugin: 'idea'
 apply plugin: 'maven-publish'
 apply plugin: "com.matthewprenger.cursegradle"
+apply plugin: "org.sonarqube"
+apply plugin: "jacoco"
 
 apply from: 'https://raw.githubusercontent.com/MinecraftModDevelopment/Gradle-Collection/22e7d543a18cd30675277fbfa3669e3d9e206010/generic/secrets.gradle'
+apply from: "sonarqube.gradle"
 
 import groovy.json.JsonOutput
 import com.diluv.schoomp.Webhook
@@ -164,8 +168,18 @@ test {
     testLogging {
         events "PASSED", "FAILED", "SKIPPED"
     }
+
+    finalizedBy jacocoTestReport // report is always generated after tests run
 }
 
+jacocoTestReport {
+    dependsOn test // tests are required to run before generating the report
+
+    reports {
+        xml.enabled true
+        csv.enabled false
+    }
+}
 
 processResources {
     dependsOn(":StdLibs:zipItUp")
