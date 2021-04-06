@@ -30,13 +30,13 @@ public class MCItemStack implements IItemStack {
     @Override
     public IItemStack copy() {
         
-        return new MCItemStack(getInternal().copy());
+        return new MCItemStack(copyInternal());
     }
     
     @Override
     public IItemStack setDisplayName(String name) {
     
-        ItemStack newStack = getInternal().copy();
+        ItemStack newStack = copyInternal();
         newStack.setDisplayName(new StringTextComponent(name));
         return new MCItemStack(newStack);
     }
@@ -44,7 +44,7 @@ public class MCItemStack implements IItemStack {
     @Override
     public IItemStack setAmount(int amount) {
     
-        ItemStack newStack = getInternal().copy();
+        ItemStack newStack = copyInternal();
         newStack.setCount(amount);
         return new MCItemStack(newStack);
     }
@@ -52,7 +52,7 @@ public class MCItemStack implements IItemStack {
     @Override
     public IItemStack withDamage(int damage) {
     
-        final ItemStack copy = getInternal().copy();
+        final ItemStack copy = copyInternal();
         copy.setDamage(damage);
         return new MCItemStack(copy);
     }
@@ -60,7 +60,7 @@ public class MCItemStack implements IItemStack {
     @Override
     public IItemStack withTag(IData tag) {
     
-        final ItemStack copy = getInternal().copy();
+        final ItemStack copy = copyInternal();
         if(!(tag instanceof MapData)) {
             tag = new MapData(tag.asMap());
         }
@@ -71,33 +71,33 @@ public class MCItemStack implements IItemStack {
     @Override
     public MCFood getFood() {
     
-        final Food food = getInternal().getItem().getFood();
+        final Food food = getDefinition().getFood();
         return food == null ? null : new MCFood(food);
     }
     
     @Override
     public void setFood(MCFood food) {
     
-        CraftTweakerAPI.apply(new ActionSetFood(this, food, this.getInternal().getItem().getFood()));
+        CraftTweakerAPI.apply(new ActionSetFood(this, food, getDefinition().getFood()));
     }
     
     @Override
     public boolean isFood() {
         
-        return getInternal().isFood();
+        return internal.isFood();
     }
     
     @Override
     public String getCommandString() {
     
         final StringBuilder sb = new StringBuilder("<item:");
-        sb.append(getInternal().getItem().getRegistryName());
+        sb.append(internal.getItem().getRegistryName());
         sb.append(">");
         
-        if(getInternal().getTag() != null) {
-            MapData data = (MapData) NBTConverter.convert(getInternal().getTag()).copyInternal();
+        if(internal.getTag() != null) {
+            MapData data = (MapData) NBTConverter.convert(internal.getTag()).copyInternal();
             //Damage is special case, if we have more special cases we can handle them here.
-            if(getInternal().getItem().isDamageable()) {
+            if(getDefinition().isDamageable()) {
                 data.remove("Damage");
             }
             if(!data.isEmpty()) {
@@ -107,8 +107,8 @@ public class MCItemStack implements IItemStack {
             }
         }
     
-        if(getInternal().getDamage() > 0) {
-            sb.append(".withDamage(").append(getInternal().getDamage()).append(")");
+        if(getDamage() > 0) {
+            sb.append(".withDamage(").append(getDamage()).append(")");
         }
     
         if(getAmount() != 1) {
@@ -120,7 +120,12 @@ public class MCItemStack implements IItemStack {
     @Override
     public ItemStack getInternal() {
     
-        return internal;
+        return copyInternal();
+    }
+    
+    private ItemStack copyInternal() {
+        
+        return internal.copy();
     }
     
     @Override
@@ -138,13 +143,13 @@ public class MCItemStack implements IItemStack {
     @Override
     public Ingredient asVanillaIngredient() {
     
-        if(getInternal().isEmpty()) {
+        if(isEmpty()) {
             return Ingredient.EMPTY;
         }
-        if(!getInternal().hasTag()) {
-            return Ingredient.fromStacks(getInternal());
+        if(!hasTag()) {
+            return Ingredient.fromStacks(copyInternal());
         }
-        return new NBTIngredient(getInternal()) {};
+        return new NBTIngredient(copyInternal()) {};
     }
     
     @Override
