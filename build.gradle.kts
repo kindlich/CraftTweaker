@@ -150,7 +150,7 @@ subprojects {
 //            library(project(":Crafttweaker_Annotations"))
             annotationProcessor(project(":Crafttweaker_Annotation_Processors"))
 
-            implementation("com.google.code.findbugs:jsr305:3.0.1")
+            implementation("com.google.code.findbugs:jsr305:3.0.2")
 
             "gametestImplementation"("com.google.truth:truth:1.1.3")
             "gametestImplementation"("com.google.truth.extensions:truth-java8-extension:1.1.3")
