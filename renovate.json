@@ -13,6 +13,11 @@
         "https://maven.shedaniel.me",
         "https://maven.parchmentmc.org"
       ]
+    },
+    {
+      "matchDatasources": ["maven"],
+      "matchPackageNames": ["com.mojang:minecraft", "Common:Forge", "docParam:docEvent"],
+      "enabled": false
     }
   ]
 }
