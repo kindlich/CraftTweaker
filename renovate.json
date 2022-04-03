@@ -2,6 +2,8 @@
   "extends": [
     "config:base"
   ],
+  "addLabels": ["dependencies"],
+
   "packageRules": [
     {
       "matchDatasources": ["maven"],
@@ -18,6 +20,18 @@
       "matchDatasources": ["maven"],
       "matchPackageNames": ["com.mojang:minecraft", "Common:Forge", "docParam:docEvent"],
       "enabled": false
+    },
+    {
+      "matchPaths": ["Common.*"],
+      "addLabels": ["Common"]
+    },
+    {
+      "matchPaths": ["Forge.*"],
+      "addLabels": ["Forge"]
+    },
+    {
+      "matchPaths": ["Fabric.*"],
+      "addLabels": ["Fabric"]
     }
   ]
 }
