@@ -155,7 +155,7 @@ subprojects {
             "gametestImplementation"("com.google.truth:truth:1.1.3")
             "gametestImplementation"("com.google.truth.extensions:truth-java8-extension:1.1.3")
             // This is required for Truth since MC uses an old Guava version, however in 1.18 the game uses an updated version.
-            "gametestImplementation"("com.google.guava:guava:31.0.1-jre")
+            "gametestImplementation"("com.google.guava:guava:31.1-jre")
         }
 
         extensions.configure<JavaPluginExtension> {
