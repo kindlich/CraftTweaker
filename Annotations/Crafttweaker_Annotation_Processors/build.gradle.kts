@@ -25,7 +25,7 @@ dependencies {
     implementation("org.jetbrains:annotations:22.0.0")
     implementation("org.reflections:reflections:0.10.2")
     implementation(files("libs/tools.jar"))
-    implementation("com.google.code.gson:gson:2.8.9")
+    implementation("com.google.code.gson:gson:2.9.0")
 }
 
 publishing {
