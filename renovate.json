@@ -1,0 +1,38 @@
+{
+  "extends": [
+    "config:base"
+  ],
+  "prHourlyLimit": 0,
+  "addLabels": ["dependencies"],
+
+  "packageRules": [
+    {
+      "matchDatasources": ["maven"],
+      "registryUrls": [
+        "https://repo.maven.apache.org/maven2/", 
+        "https://repo.spongepowered.org/repository/maven-public/",
+        "https://maven.blamejared.com",
+        "https://dvs1.progwml6.com/files/maven",
+        "https://maven.shedaniel.me",
+        "https://maven.parchmentmc.org"
+      ]
+    },
+    {
+      "matchDatasources": ["maven"],
+      "matchPackageNames": ["com.mojang:minecraft", "Common:Forge", "docParam:docEvent"],
+      "enabled": false
+    },
+    {
+      "matchPaths": ["Common.*"],
+      "addLabels": ["Common"]
+    },
+    {
+      "matchPaths": ["Forge.*"],
+      "addLabels": ["Forge"]
+    },
+    {
+      "matchPaths": ["Fabric.*"],
+      "addLabels": ["Fabric"]
+    }
+  ]
+}
