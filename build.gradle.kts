@@ -12,7 +12,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath("com.diluv.schoomp:Schoomp:1.2.5")
+        classpath("com.diluv.schoomp:Schoomp:2.1.0+0")
     }
 }
 
