@@ -15,7 +15,8 @@
         "https://dvs1.progwml6.com/files/maven",
         "https://maven.shedaniel.me",
         "https://maven.parchmentmc.org"
-      ]
+      ],
+      "groupName": "maven_dependencies"
     },
     {
       "matchDatasources": ["maven"],
