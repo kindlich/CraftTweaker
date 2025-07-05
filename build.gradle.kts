@@ -43,7 +43,7 @@ version = Utils.updatingVersion(modVersion)
 
 tasks.wrapper {
     //Define wrapper values here so as to not have to always do so when updating gradlew.properties
-    gradleVersion = "7.4.1"
+    gradleVersion = "8.14.3"
     distributionType = Wrapper.DistributionType.BIN
 }
 
