@@ -148,13 +148,13 @@ subprojects {
         }
 
         dependencies {
-            annotationProcessor("com.blamejared.crafttweaker:Crafttweaker_Annotation_Processors:3.0.0.5")
+            annotationProcessor("com.blamejared.crafttweaker:Crafttweaker_Annotation_Processors:4.0.0.21")
 
             implementation("com.google.code.findbugs:jsr305:3.0.1")
 
             gametestLibrary("com.google.truth:truth:1.1.3")
             // This is required for Truth since MC uses an old Guava version, however in 1.18 the game uses an updated version.
-            gametestLibrary("com.google.guava:guava:31.0.1-jre")
+            gametestLibrary("com.google.guava:guava:33.7.1-jre")
         }
 
         extensions.configure<JavaPluginExtension> {
