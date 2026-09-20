@@ -3,7 +3,7 @@ plugins {
     `java-library`
     `maven-publish`
     id("com.blamejared.modtemplate")
-    id("org.spongepowered.gradle.vanilla") version "0.2.1-SNAPSHOT"
+    id("org.spongepowered.gradle.vanilla") version "0.3.2"
 }
 val modVersion: String by project
 val minecraftVersion: String by project
@@ -37,7 +37,7 @@ base {
 }
 
 dependencies {
-    compileOnly("org.spongepowered:mixin:0.8.4")
+    compileOnly("org.spongepowered:mixin:0.8.7")
     (project.ext["zenCodeDeps"] as Set<*>).forEach {
         implementation(project(it.toString()))
     }

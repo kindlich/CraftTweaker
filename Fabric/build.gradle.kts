@@ -4,9 +4,9 @@ import net.darkhax.curseforgegradle.Constants as CFG_Contants
 
 plugins {
     `maven-publish`
-    id("fabric-loom") version "0.12-SNAPSHOT"
+    id("fabric-loom") version "0.13.20"
     id("com.blamejared.modtemplate")
-    id("net.darkhax.curseforgegradle") version ("1.0.9")
+    id("net.darkhax.curseforgegradle") version ("1.3.33")
 }
 
 val modVersion: String by project
@@ -35,7 +35,7 @@ dependencies {
     minecraft("com.mojang:minecraft:${minecraftVersion}")
     mappings(loom.layered {
         officialMojangMappings()
-        parchment("org.parchmentmc.data:parchment-1.18.2:2022.03.13@zip")
+        parchment("org.parchmentmc.data:parchment-1.18.2:2022.09.04@zip")
     })
     modImplementation("net.fabricmc:fabric-loader:${fabricLoaderVersion}")
     modImplementation("net.fabricmc.fabric-api:fabric-api:${fabricVersion}")
@@ -52,10 +52,10 @@ dependencies {
     modImplementation("com.faux.fauxcustomentitydata:FauxCustomEntityData-fabric-1.18.2:2.0.1")
 
     implementation("org.reflections:reflections:0.10.2")?.let { include(it) }
-    implementation("org.javassist:javassist:3.28.0-GA")?.let { include(it) } // required for reflections
+    implementation("org.javassist:javassist:3.33.0-GA")?.let { include(it) } // required for reflections
 
 
-    modImplementation("com.faux.ingredientextension:IngredientExtensionAPI-fabric-1.18.2:2.0.5")
+    modImplementation("com.faux.ingredientextension:IngredientExtensionAPI-fabric-1.18.2:2.0.9")
 
     gametestCompileOnly(files(project(":Common").dependencyProject.sourceSets.gametest.get().java.srcDirs))
     (project.ext["zenCodeTestDeps"] as Set<*>).forEach {
