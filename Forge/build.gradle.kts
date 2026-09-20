@@ -7,7 +7,7 @@ import net.darkhax.curseforgegradle.Constants as CFG_Contants
 
 plugins {
     `maven-publish`
-    id("net.minecraftforge.gradle") version ("5.1.+")
+    id("net.minecraftforge.gradle") version ("7.0.+")
     id("org.parchmentmc.librarian.forgegradle") version ("1.+")
     id("org.spongepowered.mixin") version ("0.7-SNAPSHOT")
     id("com.blamejared.modtemplate")
