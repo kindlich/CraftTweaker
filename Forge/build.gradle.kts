@@ -9,9 +9,9 @@ plugins {
     `maven-publish`
     id("net.minecraftforge.gradle") version ("5.1.+")
     id("org.parchmentmc.librarian.forgegradle") version ("1.+")
-    id("org.spongepowered.mixin") version ("0.7-SNAPSHOT")
+    id("org.spongepowered.mixin") version ("0.7.38")
     id("com.blamejared.modtemplate")
-    id("net.darkhax.curseforgegradle") version ("1.0.9")
+    id("net.darkhax.curseforgegradle") version ("1.3.33")
 }
 
 val modVersion: String by project
@@ -49,8 +49,8 @@ dependencies {
     (project.ext["zenCodeDeps"] as Set<*>).forEach {
         implementation(project(it.toString()))
     }
-    implementation(fg.deobf("mezz.jei:jei-1.18.2:9.5.2.133"))
-    annotationProcessor("org.spongepowered:mixin:0.8.5-SNAPSHOT:processor")
+    implementation(fg.deobf("mezz.jei:jei-1.18.2:9.7.2.1001"))
+    annotationProcessor("org.spongepowered:mixin:0.8.7:processor")
 
     gametestCompileOnly(files(project(":Common").dependencyProject.sourceSets.gametest.get().java.srcDirs))
     (project.ext["zenCodeTestDeps"] as Set<*>).forEach {
